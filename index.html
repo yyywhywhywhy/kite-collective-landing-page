@@ -457,8 +457,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
   document.querySelectorAll('.toggle button').forEach(function(b){b.addEventListener('click',function(){setLang(b.dataset.lang)})});
 
   // Contact form → Supabase (insert-only table, see supabase/contact_submissions.sql)
-  var SUPABASE_URL='';      // e.g. https://xxxx.supabase.co
-  var SUPABASE_ANON_KEY=''; // public anon / publishable key (safe to expose; RLS allows insert only)
+  var SUPABASE_URL='https://vvdbmujwpakxhjqolacc.supabase.co';
+  var SUPABASE_ANON_KEY='sb_publishable_rhJK-f5fBWdRao0Htr_P6w_Q6bLOHeX'; // public key, safe to expose: RLS allows insert only
   var form=document.getElementById('cform'),status=document.getElementById('cform-status');
   function zh(){return body.classList.contains('lang-zh')}
   function say(cls,en,cn){status.className='cform-status '+cls;status.textContent=zh()?cn:en}

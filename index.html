@@ -3,10 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kite Collective</title>
-<meta name="description" content="Kite Collective｜乘风 — practical AI training and coaching for teams, business owners and online sellers. Singapore & online.">
-<meta property="og:title" content="Kite Collective｜乘风">
-<meta property="og:description" content="Practical AI for teams and businesses ready to fly.">
+<title>Kite Collective｜乘风 · Practical AI Training &amp; Coaching in Singapore</title>
+<meta name="description" content="Hands-on AI training and coaching for business owners, teams and online sellers — in English or Chinese, in Singapore and online. Led by Qiao.">
+<link rel="canonical" href="https://kitecollective.co/">
+<meta name="theme-color" content="#F2F8FD">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kitecollective.co/">
+<meta property="og:site_name" content="Kite Collective">
+<meta property="og:title" content="Kite Collective｜乘风 · Practical AI Training &amp; Coaching">
+<meta property="og:description" content="Hands-on AI training for business owners, teams and online sellers. Singapore &amp; online, in English or Chinese.">
+<meta property="og:image" content="https://kitecollective.co/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kite Collective — Practical AI for teams and businesses ready to fly. Photo of founder Qiao.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kitecollective.co/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30'%3E%3Cpath d='M13 1 25 12 13 23 1 12Z' fill='%23FFC23D' stroke='%230E2A47' stroke-width='1.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,10 +167,30 @@ body.lang-zh .vision h2{font-family:var(--zh-display);font-weight:900;line-heigh
 .vision svg{position:absolute;right:-20px;top:-10px;width:min(320px,45%);height:auto;opacity:.9}
 
 /* contact */
-.contact{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px;border-top:0}
+.contact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,5vw,64px);align-items:start;border-top:0}
 .contact h2{font-size:clamp(30px,4vw,52px);line-height:1.05;font-weight:800;max-width:12em}
 body.lang-zh .contact h2{font-family:var(--zh-display);font-weight:900;line-height:1.35}
-.contact .cta{display:flex;flex-wrap:wrap;gap:12px}
+.contact-sub{margin-top:18px;color:var(--ink-soft);max-width:26em}
+.contact-alt{margin-top:14px;font-size:15px;color:var(--ink-soft)}
+.contact-alt a{color:var(--sky-deep);font-weight:600}
+.cform{background:var(--card);border:1.5px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,32px);display:grid;gap:16px}
+.cform .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cform label{display:grid;gap:6px}
+.cform .lbl{font-size:14px;font-weight:600;color:var(--ink)}
+.cform .opt{font-style:normal;font-weight:400;color:var(--ink-soft);font-size:13px}
+.cform input,.cform select,.cform textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--ground);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;width:100%}
+.cform textarea{resize:vertical;min-height:96px}
+.cform input:focus,.cform select:focus,.cform textarea:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 25%,transparent)}
+.cform [aria-invalid="true"]{border-color:#D9534F}
+.cform .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.cform-foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.cform button[disabled]{opacity:.6;cursor:progress}
+.cform-status{font-size:15px}
+.cform-status.ok{color:#2E8B57;font-weight:600}
+.cform-status.err{color:#D9534F}
+.cform-note{font-size:13px;color:var(--ink-soft)}
+.cform.sent label,.cform.sent .row2,.cform.sent .cform-note,.cform.sent button{display:none}
+@media (hover:none){.hint{display:none}}
 footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:28px 40px;border-top:1.5px solid var(--line);font:400 13px var(--mono);color:var(--ink-soft)}
 
 @media (max-width:880px){
@@ -173,6 +204,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
   .svc{grid-template-columns:1fr}
   .svc > div + div{border-left:0;border-top:1.5px solid var(--line)}
   .why dl{grid-template-columns:1fr}
+  .contact{grid-template-columns:1fr}
+  .cform .row2{grid-template-columns:1fr}
   .navr .btn{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -204,11 +237,11 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
         <span class="zh">实用AI，让团队和生意<span class="fly">乘风</span>而起。</span>
       </h1>
       <p class="lede">
-        <span class="en">I help <strong>companies, teams and business owners</strong> put AI to work — with hands-on training people actually use. Everything I teach has been tested and proven by <strong>200+ business owners</strong>.</span>
-        <span class="zh">我帮<strong>企业、团队和老板们</strong>把AI真正用起来——实操培训，学完就能用。我教的每一个方法，都经过<strong>200+位老板</strong>实战验证。</span>
+        <span class="en">I help <strong>business owners, teams and companies</strong> put AI to work, through hands-on training people keep using after the session ends. Every method I teach has been proven with <strong>200+ business owners</strong>.</span>
+        <span class="zh">我帮<strong>老板、团队和企业</strong>把AI真正用起来——手把手实操，学完就能用。我教的每一个方法，都经过<strong>200+位老板</strong>实战验证。</span>
       </p>
       <div class="cta">
-        <a class="btn primary" href="#doors"><span class="en">See how we work</span><span class="zh">看看合作方式</span></a>
+        <a class="btn primary" href="#doors"><span class="en">See how I can help</span><span class="zh">看看合作方式</span></a>
         <a class="btn ghost" href="#story"><span class="en">Meet Qiao</span><span class="zh">认识 Qiao</span></a>
       </div>
     </div>
@@ -267,8 +300,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
         <div class="side">
           <p class="title-line"><strong>Qiao</strong><span class="en"> · Founder, Kite Collective · AI Coach &amp; Educator</span><span class="zh"> · Kite Collective 创始人 · AI实战教练</span></p>
           <p>
-            <span class="en">Hi, I’m Qiao. I teach what actually moves a business forward, not what’s trendy — and every method has been tested with 200+ business owners. Here’s what AI can take off your plate:</span>
-            <span class="zh">你好，我是 Qiao。我只教真正能带来生意的方法，不追热点——每一个方法都经过200+位老板实战验证。AI可以帮你接手这些事：</span>
+            <span class="en">I teach what actually moves a business forward, not whatever’s trending this week. Here’s what AI can take off your plate:</span>
+            <span class="zh">我只教真正能推动生意的方法，不追热点。这些事，现在都可以交给AI：</span>
           </p>
           <div class="before" aria-label="Before and after AI">
             <div><span class="old en">Photo shoot</span><span class="old zh">请摄影棚拍图</span><span class="arr">→</span><span class="new en">AI product photos</span><span class="new zh">AI生成产品图</span></div>
@@ -289,7 +322,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
     </div>
     <div class="doors">
       <article class="door">
-        <p class="label"><span class="en">Business owners · Singapore</span><span class="zh">老板与个体 · 新加坡线下</span></p>
+        <p class="label"><span class="en">Business owners · Singapore</span><span class="zh">老板与自由职业者 · 新加坡线下</span></p>
         <h3><span class="en">AI for Business Growth</span><span class="zh">AI商业增长工作坊</span></h3>
         <p class="who"><span class="en">For small business owners, solo professionals, side hustlers and community builders — whether you run an accounting firm, a studio or a hobby club.</span><span class="zh">适合小生意老板、独立从业者、副业人和社群主理人——无论是会计事务所、工作室，还是兴趣社群。</span></p>
         <ul>
@@ -297,8 +330,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
           <li><span class="en">Create a month of social content in one afternoon</span><span class="zh">一个下午做完一个月的社媒内容</span></li>
           <li><span class="en">Set up WhatsApp &amp; Instagram auto-replies, sign-ups and bookings</span><span class="zh">设置 WhatsApp 和 Instagram 自动回复、报名与预约</span></li>
         </ul>
-        <div class="foot"><span class="chip"><span class="en">No tech background needed</span><span class="zh">零基础可学</span></span><span class="chip"><span class="en">Leave with real results</span><span class="zh">带着成果离开</span></span></div>
-        <div><a class="btn primary" href="#contact"><span class="en">Join a workshop</span><span class="zh">报名工作坊</span></a></div>
+        <div class="foot"><span class="chip"><span class="en">No tech background needed</span><span class="zh">零基础可学</span></span><span class="chip"><span class="en">Leave with it done</span><span class="zh">学完就有成果</span></span></div>
+        <div><a class="btn primary" href="#contact" data-interest="workshop"><span class="en">Join a workshop</span><span class="zh">报名工作坊</span></a></div>
       </article>
       <article class="door team">
         <p class="label"><span class="en">Companies &amp; teams · in-house</span><span class="zh">企业与团队 · 内训</span></p>
@@ -310,10 +343,10 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
           <li><span class="en">On-site or online, in English or Chinese</span><span class="zh">线下或线上，中英文授课</span></li>
         </ul>
         <div class="foot"><span class="chip"><span class="en">Tailored to your team</span><span class="zh">按团队定制</span></span><span class="chip"><span class="en">EN &amp; 中文</span><span class="zh">中英双语</span></span></div>
-        <div><a class="btn primary" href="#contact"><span class="en">Enquire about team training</span><span class="zh">咨询企业内训</span></a></div>
+        <div><a class="btn primary" href="#contact" data-interest="team"><span class="en">Enquire about team training</span><span class="zh">咨询企业内训</span></a></div>
       </article>
       <article class="door global">
-        <p class="label"><span class="en">Online sellers · online course</span><span class="zh">电商卖家 · 线上课程</span></p>
+        <p class="label"><span class="en">Online sellers · course coming soon</span><span class="zh">电商卖家 · 线上课即将上线</span></p>
         <h3><span class="en">AI for E-commerce</span><span class="zh">AI电商实战课</span></h3>
         <p class="who"><span class="en">For online sellers on Shopify, Shopee, TikTok Shop and beyond.</span><span class="zh">适合 Shopify、Shopee、TikTok Shop 等平台卖家。</span></p>
         <ul>
@@ -321,8 +354,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
           <li><span class="en">Ads and content, made faster</span><span class="zh">更快做出广告与内容</span></li>
           <li><span class="en">Customer service and store operations on autopilot</span><span class="zh">客服与店铺运营自动化</span></li>
         </ul>
-        <div class="foot"><span class="chip"><span class="en">Proven by 200+ business owners</span><span class="zh">200+位老板验证</span></span><span class="chip"><span class="en">English &amp; Chinese</span><span class="zh">中英双语</span></span></div>
-        <div><a class="btn kite" href="#contact"><span class="en">Join the waitlist</span><span class="zh">加入候补名单</span></a></div>
+        <div class="foot"><span class="chip"><span class="en">Self-paced, online</span><span class="zh">线上自学</span></span><span class="chip"><span class="en">English &amp; Chinese</span><span class="zh">中英双语</span></span></div>
+        <div><a class="btn kite" href="#contact" data-interest="ecommerce"><span class="en">Join the waitlist</span><span class="zh">加入候补名单</span></a></div>
       </article>
     </div>
   </section>
@@ -349,7 +382,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
       <dl>
         <div><dt><span class="en">Proven in real businesses</span><span class="zh">真实生意里验证过</span></dt><dd><span class="en">Everything I teach has been tested by 200+ business owners — not just in theory.</span><span class="zh">教的每个方法都经过200+位老板实战验证，不是纸上谈兵。</span></dd></div>
         <div><dt><span class="en">Fluent in two worlds</span><span class="zh">中英双语，两个世界都懂</span></dt><dd><span class="en">Bilingual AI tutorials on RedNote, Bilibili, YouTube and Instagram.</span><span class="zh">小红书、B站、YouTube、Instagram 中英双语AI教程创作者。</span></dd></div>
-        <div><dt><span class="en">On stage in the AI scene</span><span class="zh">活跃在AI行业一线</span></dt><dd><span class="en">Hosted AI panels and events with ByteDance and Google Cloud.</span><span class="zh">主持过字节跳动、Google Cloud 等AI活动与圆桌。</span></dd></div>
+        <div><dt><span class="en">On stage in the AI scene</span><span class="zh">活跃在AI行业一线</span></dt><dd><span class="en">Has hosted AI panels and events featuring ByteDance and Google Cloud.</span><span class="zh">主持过字节跳动、Google Cloud 等AI活动与圆桌。</span></dd></div>
         <div><dt><span class="en">A global view of business</span><span class="zh">国际化的商业视野</span></dt><dd><span class="en">Background in corporate venture capital; studied and worked across five countries.</span><span class="zh">企业风险投资背景，在五个国家学习和工作过。</span></dd></div>
       </dl>
     </div>
@@ -363,19 +396,43 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
         <path d="M0 -44V40M-32 -4H32" stroke="var(--ink)" stroke-width="1.4"/>
       </g>
     </svg>
-    <p class="label"><span class="en">Our vision</span><span class="zh">愿景</span></p>
+    <p class="label"><span class="en">The vision</span><span class="zh">愿景</span></p>
     <h2 style="margin-top:16px"><span class="en">Every business, big or small, deserves <span class="hl">an AI team.</span></span><span class="zh">让每一家企业、每一个老板，都有<span class="hl">一支AI团队</span>。</span></h2>
     <p><span class="en">The wind is already blowing. You don’t need to be big to rise with it — you just need to know how to hold the string.</span><span class="zh">风已经来了。不必是大公司才能乘风而起，你只需要学会握好那根线。</span></p>
   </div>
 
   <section class="contact" id="contact">
-    <div>
+    <div class="contact-intro">
       <p class="label" style="margin-bottom:14px"><span class="en">Let’s talk</span><span class="zh">聊聊吧</span></p>
       <h2><span class="en">Are you ready to fly?</span><span class="zh">准备好乘风了吗？</span></h2>
+      <p class="contact-sub"><span class="en">Tell me a little about you and what you’re looking for. I’ll get back to you personally by email.</span><span class="zh">简单介绍一下你和你的需求，我会亲自通过邮件回复你。</span></p>
+      <p class="contact-alt"><span class="en">Prefer email? </span><span class="zh">也可以直接发邮件：</span><a href="mailto:hello@kitecollective.co">hello@kitecollective.co</a></p>
     </div>
-    <div class="cta">
-      <a class="btn primary" href="mailto:hello@kitecollective.co"><span class="en">Email hello@kitecollective.co</span><span class="zh">邮件联系</span></a>
-    </div>
+    <form class="cform" id="cform" novalidate>
+      <div class="row2">
+        <label><span class="lbl"><span class="en">Name</span><span class="zh">姓名</span> *</span><input name="name" type="text" autocomplete="name" required maxlength="120"></label>
+        <label><span class="lbl"><span class="en">Email</span><span class="zh">邮箱</span> *</span><input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+      </div>
+      <label><span class="lbl"><span class="en">I’m interested in</span><span class="zh">我感兴趣的是</span> *</span>
+        <select name="interest" required>
+          <option value="" disabled selected data-en="Choose one" data-zh="请选择">Choose one</option>
+          <option value="workshop" data-en="AI for Business Growth workshop" data-zh="AI商业增长工作坊">AI for Business Growth workshop</option>
+          <option value="team" data-en="AI training for my team" data-zh="企业AI实战内训">AI training for my team</option>
+          <option value="ecommerce" data-en="AI for E-commerce (waitlist)" data-zh="AI电商实战课（候补名单）">AI for E-commerce (waitlist)</option>
+          <option value="sprint" data-en="1:1 AI Growth Sprint" data-zh="一对一AI增长陪跑">1:1 AI Growth Sprint</option>
+          <option value="speaking" data-en="Speaking or hosting" data-zh="演讲与论坛主持">Speaking or hosting</option>
+          <option value="other" data-en="Something else" data-zh="其他">Something else</option>
+        </select>
+      </label>
+      <label><span class="lbl"><span class="en">Company or business</span><span class="zh">公司或品牌</span> <em class="opt"><span class="en">optional</span><span class="zh">选填</span></em></span><input name="company" type="text" autocomplete="organization" maxlength="160"></label>
+      <label><span class="lbl"><span class="en">Anything I should know?</span><span class="zh">还有什么想告诉我的？</span> <em class="opt"><span class="en">optional</span><span class="zh">选填</span></em></span><textarea name="message" rows="4" maxlength="4000"></textarea></label>
+      <input class="hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="cform-foot">
+        <button class="btn primary" type="submit"><span class="en">Send</span><span class="zh">提交</span></button>
+        <p class="cform-status" id="cform-status" role="status" aria-live="polite"></p>
+      </div>
+      <p class="cform-note"><span class="en">I’ll only use your details to reply to you. No spam, ever.</span><span class="zh">你的信息仅用于回复你，绝不发送垃圾邮件。</span></p>
+    </form>
   </section>
 
   <footer>
@@ -393,10 +450,41 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
     document.getElementById('btn-en').setAttribute('aria-pressed',l!=='zh');
     document.getElementById('btn-zh').setAttribute('aria-pressed',l==='zh');
     try{localStorage.setItem('kc-lang',l)}catch(e){}
+    document.querySelectorAll('#cform option').forEach(function(o){o.textContent=o.dataset[l==='zh'?'zh':'en']});
   }
   var saved=null;try{saved=localStorage.getItem('kc-lang')}catch(e){}
   setLang(saved==='zh'?'zh':'en');
   document.querySelectorAll('.toggle button').forEach(function(b){b.addEventListener('click',function(){setLang(b.dataset.lang)})});
+
+  // Contact form → Supabase (insert-only table, see supabase/contact_submissions.sql)
+  var SUPABASE_URL='';      // e.g. https://xxxx.supabase.co
+  var SUPABASE_ANON_KEY=''; // public anon / publishable key (safe to expose; RLS allows insert only)
+  var form=document.getElementById('cform'),status=document.getElementById('cform-status');
+  function zh(){return body.classList.contains('lang-zh')}
+  function say(cls,en,cn){status.className='cform-status '+cls;status.textContent=zh()?cn:en}
+  document.querySelectorAll('a[data-interest]').forEach(function(a){
+    a.addEventListener('click',function(){form.interest.value=a.dataset.interest;form.interest.removeAttribute('aria-invalid')});
+  });
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(form.website.value)return; // bot filled the hidden field
+    var bad=null;
+    ['name','email','interest'].forEach(function(n){
+      var f=form.elements[n],ok=f.value.trim()!==''&&(n!=='email'||/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value.trim()));
+      f.setAttribute('aria-invalid',ok?'false':'true');if(!ok&&!bad)bad=f;
+    });
+    if(bad){bad.focus();return say('err','Please fill in your name, a valid email and what you’re interested in.','请填写姓名、有效邮箱，并选择你感兴趣的服务。')}
+    var data={name:form.elements.name.value.trim(),email:form.email.value.trim(),interest:form.interest.value,
+      company:form.company.value.trim()||null,message:form.message.value.trim()||null,lang:zh()?'zh':'en',source:location.href.slice(0,200)};
+    if(!SUPABASE_URL||!SUPABASE_ANON_KEY){return say('err','The form isn’t connected yet. Please email hello@kitecollective.co.','表单暂未开通，请发邮件至 hello@kitecollective.co。')}
+    var btn=form.querySelector('button');btn.disabled=true;say('','Sending…','提交中…');
+    fetch(SUPABASE_URL+'/rest/v1/contact_submissions',{method:'POST',
+      headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,Prefer:'return=minimal'},
+      body:JSON.stringify(data)})
+    .then(function(r){if(!r.ok)throw new Error(r.status);form.reset();form.classList.add('sent');
+      say('ok','Thanks, '+data.name+'! Got it. I’ll be in touch soon.','谢谢你，'+data.name+'！已收到，我会尽快联系你。')})
+    .catch(function(){btn.disabled=false;say('err','Something went wrong. Please try again, or email hello@kitecollective.co.','提交失败，请重试，或发邮件至 hello@kitecollective.co。')});
+  });
 
   // Kite
   var sky=document.getElementById('sky'),svg=document.getElementById('skysvg');

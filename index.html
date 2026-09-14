@@ -21,7 +21,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30'%3E%3Cpath d='M13 1 25 12 13 23 1 12Z' fill='%23FFC23D' stroke='%230E2A47' stroke-width='1.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
 <style>
 :root{
   --ground:#F2F8FD;
@@ -37,9 +37,9 @@
   --bloom:#F59BB0;
   --cloud:#FFFFFF;
   --focus:#2F7FC1;
-  --display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
-  --body:"Instrument Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  --mono:"DM Mono",ui-monospace,Menlo,monospace;
+  --display:"Gloock","Noto Serif SC",Georgia,serif;
+  --body:"Figtree","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"Figtree","Noto Sans SC",system-ui,sans-serif;
   --zh-display:"Noto Serif SC","Songti SC",serif;
 }
 @media (prefers-color-scheme: dark){
@@ -209,6 +209,10 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
   .navr .btn{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Gloock ships in one weight: keep English headings at 400 so the browser doesn't fake-bold them */
+.brand,body:not(.lang-zh) :is(h1,h2,h3,.story blockquote,.why dt,.title-line strong){font-weight:400;letter-spacing:-.01em}
+.label{font-weight:600}
 </style>
 
 <style>body{margin:0}img{max-width:100%}</style>

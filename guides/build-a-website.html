@@ -1,0 +1,1162 @@
+<title>Build Your Website with Claude</title>
+<meta name="description" content="A step-by-step cheat sheet for building your own website with Claude and putting it online. No coding. Copy-and-paste prompts included. By Kite Collective.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30'%3E%3Cpath d='M13 1 25 12 13 23 1 12Z' fill='%23FFC23D' stroke='%230E2A47' stroke-width='1.6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F8FD;
+  --sky:#CBE5F8;
+  --sky-soft:#E3F1FB;
+  --sky-deep:#2F7FC1;
+  --ink:#0E2A47;
+  --ink-soft:#4A6380;
+  --line:#CFE0EE;
+  --card:#FFFFFF;
+  --kite:#FFC23D;
+  --kite-soft:#FFE7AE;
+  --kite-ink:#0E2A47;
+  --bloom:#F59BB0;
+  --bloom-soft:#FDE6EC;
+  --ok:#2E8B57;
+  --focus:#2F7FC1;
+  --display:"Gloock",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A1A2C;--sky:#17385A;--sky-soft:#10263F;--sky-deep:#7DC0F2;
+    --ink:#EAF4FC;--ink-soft:#A3BCD4;--line:#1F3D5C;--card:#0F2338;
+    --kite:#FFC847;--kite-soft:#4A3B12;--kite-ink:#0A1A2C;--bloom:#F7A7BA;--bloom-soft:#3A1E2A;--ok:#5CC98C;--focus:#7DC0F2;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A1A2C;--sky:#17385A;--sky-soft:#10263F;--sky-deep:#7DC0F2;
+  --ink:#EAF4FC;--ink-soft:#A3BCD4;--line:#1F3D5C;--card:#0F2338;
+  --kite:#FFC847;--kite-soft:#4A3B12;--kite-ink:#0A1A2C;--bloom:#F7A7BA;--bloom-soft:#3A1E2A;--ok:#5CC98C;--focus:#7DC0F2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:clamp(16px,4vw,48px);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin-inline:auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.label{font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sky-deep)}
+code,.path{font-family:var(--mono);font-size:.86em;background:var(--sky-soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.swap{background:var(--kite);color:var(--kite-ink);border-radius:5px;padding:1px 5px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.term{text-decoration:underline dotted var(--sky-deep);text-decoration-thickness:2px;text-underline-offset:4px;cursor:help}
+.term:hover{color:var(--sky-deep)}
+
+/* nav */
+nav.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:20px}
+.brand small{font-family:var(--body);font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;border-left:1.5px solid var(--line);padding-left:10px;margin-left:2px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--body);text-decoration:none;border-radius:999px;padding:10px 18px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--ink);color:var(--ground)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(20px,4vw,48px) clamp(40px,6vw,64px)}
+.hero h1{font-size:clamp(42px,6vw,76px);line-height:1}
+.hero h1 .fly{color:var(--sky-deep);position:relative;white-space:nowrap;z-index:0}
+.hero h1 .fly::after{content:"";position:absolute;left:0;right:0;bottom:.05em;height:.14em;background:var(--kite);border-radius:4px;z-index:-1}
+.lede{margin-top:22px;font-size:clamp(17px,1.6vw,20px);color:var(--ink-soft);max-width:34em}
+.lede strong{color:var(--ink);font-weight:600}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;padding:0;list-style:none}
+.facts li{font-size:14px;font-weight:500;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:5px 13px}
+
+.sky{position:relative;border-radius:28px;background:linear-gradient(180deg,var(--sky) 0%,var(--sky-soft) 100%);border:1.5px solid var(--line);padding:clamp(22px,4vw,40px);overflow:hidden}
+.sky .kite-float{position:absolute;right:18px;top:14px;width:64px;height:auto;transform:rotate(12deg)}
+.browser{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 40px -24px rgba(14,42,71,.45);margin-top:34px}
+.browser .bar{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1.5px solid var(--line)}
+.browser .bar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.browser .url{margin-left:8px;flex:1;font:500 12px var(--mono);color:var(--ink-soft);background:var(--ground);border-radius:999px;padding:4px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browser .page{padding:16px;display:grid;gap:12px}
+.browser .banner{background:#F6D27A;color:#3B2414;border-radius:10px;padding:14px}
+.browser .banner b{font-family:var(--display);font-weight:400;font-size:20px;display:block;line-height:1.1}
+.browser .banner span{font-size:12px}
+.browser .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.browser .tiles div{aspect-ratio:1;border-radius:8px;background:#F3E6D2;display:grid;place-items:center}
+.browser .tiles div::after{content:"";width:34%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 40%,#6B4226 7%,transparent 8%),radial-gradient(circle at 62% 58%,#6B4226 7%,transparent 8%),radial-gradient(circle at 45% 70%,#6B4226 6%,transparent 7%),#D9A868}
+.browser .order{justify-self:start;background:#C8553D;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:5px 12px}
+.sky .cap{margin-top:14px;font-size:13.5px;color:var(--ink-soft)}
+
+/* how to read */
+.legend{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:16px 22px;font-size:15px}
+.legend strong{font-weight:600}
+
+/* layout: toc + content */
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:clamp(24px,4vw,56px);margin-top:clamp(32px,5vw,56px)}
+.toc{position:sticky;top:24px;align-self:start;font-size:14.5px}
+.toc ol{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:2px}
+.toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink-soft);padding:7px 10px;border-radius:10px}
+.toc a b{font-family:var(--display);font-weight:400;font-size:17px;color:var(--ink);min-width:1ch}
+.toc a:hover{background:var(--sky-soft);color:var(--ink)}
+.toc a.on{background:var(--ink);color:var(--ground)}
+.toc a.on b{color:var(--kite)}
+.toc .sub{margin:4px 0 8px 30px;display:grid;gap:0}
+.toc .sub a{padding:3px 10px;font-size:13.5px}
+.toc .sub a.on{background:transparent;color:var(--sky-deep);font-weight:600}
+
+/* parts */
+.part{padding-block:clamp(40px,6vw,72px);border-top:1.5px solid var(--line)}
+.part:first-child{border-top:0;padding-top:0}
+.part-head{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:end;margin-bottom:clamp(28px,4vw,44px)}
+.part-num{grid-row:span 2;font-family:var(--display);font-size:clamp(72px,10vw,120px);line-height:.8;color:var(--sky-deep)}
+.part-head h2{font-size:clamp(32px,4vw,50px);line-height:1.05}
+.part-head p{grid-column:2;color:var(--ink-soft);max-width:36em}
+
+.step{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:18px clamp(20px,3vw,40px);padding-block:28px;border-top:1.5px dashed var(--line)}
+.part-head + .step{border-top:0;padding-top:0}
+.step-main{display:grid;gap:16px;align-content:start;min-width:0}
+.step-title{display:flex;align-items:baseline;gap:14px}
+.step-title .n{font:500 14px var(--mono);color:var(--sky-deep);background:var(--sky-soft);border:1.5px solid var(--line);border-radius:999px;padding:2px 10px;flex:none;position:relative;top:-3px}
+.step-title h3{font-size:clamp(24px,2.6vw,30px);line-height:1.15}
+.step-main > p{max-width:40em}
+.muted{color:var(--ink-soft)}
+.notes{display:grid;gap:14px;align-content:start}
+
+/* numbered actions */
+ol.do{list-style:none;counter-reset:do;margin:0;padding:0;display:grid;gap:10px;max-width:40em}
+ol.do li{counter-increment:do;display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start}
+ol.do li::before{content:counter(do);width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--ground);font:700 13px var(--body);display:grid;place-items:center;margin-top:1px}
+ul.kites{list-style:none;margin:0;padding:0;display:grid;gap:9px;max-width:40em}
+ul.kites li{display:grid;grid-template-columns:18px 1fr;gap:10px}
+ul.kites li::before{content:"";width:10px;height:10px;margin-top:.55em;transform:rotate(45deg);background:var(--kite);border-radius:2px;outline:1.5px solid var(--ink);outline-offset:-1.5px}
+
+/* term notes */
+.note{background:var(--sky-soft);border-radius:16px;padding:16px 18px;font-size:14.5px;line-height:1.55;scroll-margin-top:24px}
+.note .t{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:19px;line-height:1.2;margin-bottom:6px}
+.note .t svg{flex:none}
+.note .t small{font:600 10.5px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--sky-deep);margin-left:auto}
+.note .eg{margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--line);color:var(--ink-soft)}
+.note .eg b{color:var(--ink);font-weight:600}
+.note:target{outline:2.5px solid var(--kite);outline-offset:2px}
+.tip{background:var(--bloom-soft);border-radius:16px;padding:14px 18px;font-size:15px;max-width:40em}
+.tip b{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-right:8px}
+
+/* prompt blocks */
+.prompt{background:var(--card);border:1.5px solid var(--ink);border-radius:18px;overflow:hidden;max-width:46em}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px 10px 18px;border-bottom:1.5px solid var(--line);background:var(--sky-soft)}
+.prompt-head .where{font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.copy{font:600 14px var(--body);border:1.5px solid var(--ink);background:var(--ink);color:var(--ground);border-radius:999px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;flex:none;transition:background .2s,color .2s}
+.copy:hover{background:var(--sky-deep);border-color:var(--sky-deep)}
+.copy.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.prompt-body{margin:0;padding:18px 20px 20px;font:400 14.5px/1.75 var(--mono);white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 14px var(--body);border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chip:hover{border-color:var(--ink)}
+.chip.done{border-color:var(--ok);color:var(--ok)}
+.chip svg{opacity:.6}
+
+/* two-col OS */
+.os{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:46em}
+.os > div{border:1.5px solid var(--line);border-radius:16px;padding:16px 18px;background:var(--card);display:grid;gap:10px;align-content:start}
+.os h4{margin:0;font-size:16px;font-weight:700}
+
+/* rooms table */
+.rooms{border:1.5px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card);max-width:46em}
+.rooms > div{display:grid;grid-template-columns:110px 1fr 1.1fr;gap:16px;padding:14px 18px;align-items:baseline}
+.rooms > div + div{border-top:1.5px solid var(--line)}
+.rooms .r{font-family:var(--display);font-size:22px}
+.rooms .today{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--kite);color:var(--kite-ink);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:3px;font-family:var(--body)}
+.rooms .use{color:var(--ink-soft);font-size:15px}
+.others{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:46em}
+.others > div{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px;background:var(--card)}
+.others b{display:block;font-size:16px}
+.others span{color:var(--ink-soft)}
+
+/* brief card */
+.brief{border:1.5px solid var(--line);border-radius:20px;background:var(--card);padding:clamp(18px,3vw,28px);display:grid;gap:14px;max-width:46em}
+.brief h4{margin:0;font-family:var(--display);font-weight:400;font-size:28px;color:var(--sky-deep)}
+.brief dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:8px 18px;font-size:15.5px}
+.brief dt{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);padding-top:4px}
+.brief dd{margin:0}
+
+/* file tree */
+.tree{font:400 14px/1.9 var(--mono);background:var(--ink);color:var(--ground);border-radius:16px;padding:16px 20px;max-width:30em;overflow-x:auto;white-space:pre;margin:0}
+.tree .c{color:var(--kite)}
+.tree .d{opacity:.6}
+
+/* checklist */
+.check{list-style:none;margin:0;padding:0;border:1.5px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden;max-width:46em}
+.check li + li{border-top:1.5px solid var(--line)}
+.check label{display:grid;grid-template-columns:26px 1fr;gap:14px;padding:13px 18px;cursor:pointer;align-items:start}
+.check input{appearance:none;-webkit-appearance:none;width:24px;height:24px;margin:1px 0 0;border:2px solid var(--ink-soft);border-radius:7px;display:grid;place-items:center;cursor:pointer;background:var(--card)}
+.check input::after{content:"";width:6px;height:11px;border:solid var(--card);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px);opacity:0}
+.check input:checked{background:var(--ok);border-color:var(--ok)}
+.check input:checked::after{opacity:1}
+.check input:checked + span b{text-decoration:line-through;text-decoration-color:var(--ok);text-decoration-thickness:2px}
+.check b{display:block;font-weight:600}
+.check small{color:var(--ink-soft);font-size:14px}
+
+/* external links */
+a.ext{font-family:var(--mono);font-size:.86em;background:var(--sky-soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap;color:var(--sky-deep);font-weight:500;text-decoration:none}
+a.ext::after{content:" ↗";font-family:var(--body)}
+a.ext:hover{border-color:var(--sky-deep);background:var(--card)}
+.note a{color:var(--sky-deep);font-weight:600}
+
+/* whatsapp builder */
+.builder{border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:18px 20px;display:grid;gap:14px;max-width:46em}
+.builder-row{display:grid;grid-template-columns:1fr 1.4fr;gap:12px}
+.builder label{display:grid;gap:6px;font-size:14px;font-weight:600}
+.builder input{font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:var(--ground);border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;width:100%}
+.builder input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 25%,transparent)}
+.builder-out{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--sky-soft);border-radius:12px;padding:10px 10px 10px 14px}
+.builder-out code{flex:1 1 16em;background:transparent;border:0;padding:0;white-space:normal;word-break:break-all;font-size:13.5px}
+.builder-btns{display:flex;gap:8px;flex-wrap:wrap}
+.builder-btns .btn{padding:6px 14px;font-size:14px}
+.builder-ig{font-size:14.5px;color:var(--ink-soft)}
+.builder-ig code{white-space:normal}
+@media (max-width:600px){.builder-row{grid-template-columns:1fr}}
+
+/* hosting flow */
+.ui{font-weight:600;font-size:.94em;background:var(--card);border:1.5px solid var(--line);border-radius:7px;padding:0 7px;white-space:nowrap}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;max-width:46em}
+.flow .box{border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.flow .box b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1}
+.flow .box span{color:var(--ink-soft);font-size:14.5px;line-height:1.45}
+.flow .box.live{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.flow .box.live span{color:color-mix(in srgb,var(--ground) 78%,transparent)}
+.flow .arr{align-self:center;display:grid;justify-items:center;color:var(--sky-deep);line-height:1}
+.flow .arr i{font-style:normal;font-size:22px}
+.flow .arr i::before{content:"→"}
+.flow .arr small{font:500 11px var(--mono);letter-spacing:.04em;margin-top:2px}
+.fix{border:1.5px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden;max-width:46em}
+.fix > div{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 18px;font-size:15px}
+.fix > div + div{border-top:1.5px solid var(--line)}
+.fix .err{font:500 13.5px/1.7 var(--mono);color:var(--ink)}
+@media (max-width:600px){
+  .flow{grid-template-columns:1fr}
+  .flow .arr{grid-auto-flow:column;gap:8px;align-items:center}
+  .flow .arr i::before{content:"↓"}
+  .fix > div{grid-template-columns:1fr;gap:2px}
+}
+
+/* folder picture */
+.folder{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:46em}
+.folder > div{border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:18px 20px;display:grid;gap:12px;align-content:start}
+.folder > div.made{background:var(--sky-soft)}
+.folder code{white-space:normal;font-size:13px}
+.folder .muted{font-size:14px;line-height:1.4}
+.folder .opt{font-size:13.5px;border-top:1.5px dashed var(--line);padding-top:10px;margin-top:2px}
+@media (max-width:600px){.folder{grid-template-columns:1fr}}
+
+/* photo pack */
+.pack-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:20px}
+.pack-bar a:not(.btn){color:var(--sky-deep);font-weight:600}
+.pack{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:20px}
+.shot{margin:0;background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden;display:grid;grid-template-rows:auto 1fr}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:var(--sky-soft)}
+.shot figcaption{padding:12px 14px 14px;display:grid;gap:4px;font-size:13.5px;align-content:start}
+.shot code{white-space:normal;word-break:break-all;justify-self:start;font-size:12px}
+.shot .use{color:var(--ink);font-weight:600;margin-top:4px}
+.shot .credit{color:var(--ink-soft)}
+.shot .credit a{color:inherit}
+.shot .dl{justify-self:start;margin-top:8px;font-weight:600;color:var(--sky-deep);text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:4px 12px}
+.shot .dl:hover{border-color:var(--sky-deep)}
+.part-num svg{display:block;width:clamp(48px,6vw,64px);height:auto}
+
+/* finish */
+.finish{background:var(--sky);border-radius:32px;padding:clamp(32px,6vw,72px) clamp(22px,5vw,64px);margin-block:12px 32px;position:relative;overflow:hidden}
+.finish h2{font-size:clamp(32px,4.4vw,56px);line-height:1.05;max-width:13em;position:relative}
+.finish h2 span{color:var(--sky-deep)}
+.finish .later{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;position:relative}
+.finish .later div{background:var(--card);border-radius:16px;padding:16px 18px;font-size:15px}
+.finish .later b{display:block;font-family:var(--display);font-weight:400;font-size:20px;margin-bottom:4px}
+.finish svg.big{position:absolute;right:-10px;top:-18px;width:min(220px,34%);height:auto;opacity:.95}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-block:28px 40px;border-top:1.5px solid var(--line);font-size:14px;color:var(--ink-soft)}
+footer a{color:var(--sky-deep);font-weight:600;text-decoration:none}
+
+@media (max-width:1080px){
+  .step{grid-template-columns:1fr}
+  .notes{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+}
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr}
+  .layout{grid-template-columns:1fr}
+  .toc{display:none}
+  .finish .later,.others{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .os{grid-template-columns:1fr}
+  .rooms > div{grid-template-columns:1fr;gap:2px}
+  .brief dl{grid-template-columns:1fr;gap:2px}
+  .brief dd{margin-bottom:8px}
+  .part-head{grid-template-columns:1fr}
+  .part-num{grid-row:auto;font-size:64px}
+  .part-head p{grid-column:1}
+  nav.top .btn{display:none}
+  .prompt-head{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media print{
+  body{background:#fff;color:#000}
+  nav.top,.toc,.copy,.chips svg,.sky{display:none}
+  .layout,.hero{grid-template-columns:1fr}
+  .step,.prompt{break-inside:avoid}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="kite" viewBox="0 0 26 30"><path d="M13 1 25 12 13 23 1 12Z" fill="var(--kite)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 1v22M1 12h24" stroke="var(--ink)" stroke-width="1.2"/><path d="M13 23c-2 2 2 3 0 6" stroke="var(--ink)" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="kite-color" viewBox="0 0 100 150"><path d="M50 4 94 50 50 116 6 50Z" fill="#FFD57A"/><path d="M50 4 94 50 50 70Z" fill="#FFC23D"/><path d="M6 50 50 70 50 116Z" fill="#FFFFFF"/><path d="M94 50 50 70 50 116Z" fill="#F59BB0"/><path d="M50 4 94 50 50 116 6 50Z" fill="none" stroke="#0E2A47" stroke-width="4" stroke-linejoin="round"/><path d="M50 116c-8 10 8 16 0 30" stroke="#0E2A47" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="copyi" viewBox="0 0 16 16"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 3.5V3a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 2 3v6.5A1.5 1.5 0 0 0 3.5 11H4" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+</svg>
+
+<div class="wrap">
+  <nav class="top">
+    <a class="brand" href="https://kitecollective.co/" aria-label="Kite Collective home">
+      <svg width="26" height="30" aria-hidden="true"><use href="#kite"/></svg>
+      Kite Collective <small>Cheat sheet</small>
+    </a>
+    <a class="btn primary" href="#part-1">Start at step 1</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <p class="label" style="margin-bottom:18px">Step-by-step · No coding needed</p>
+      <h1>Build your own website with <span class="fly">Claude.</span></h1>
+      <p class="lede">One folder on your laptop, a handful of prompts you <strong>copy and paste</strong>, and a real link you can send to a customer by the end. Go through it in order. Every new word gets explained on the side the moment it shows up.</p>
+      <ul class="facts">
+        <li>About 2 hours</li>
+        <li>Mac or Windows</li>
+        <li>Claude Pro plan</li>
+        <li>Free GitHub + Vercel accounts</li>
+      </ul>
+    </div>
+    <div class="sky" aria-label="Example of the finished website">
+      <svg class="kite-float" viewBox="0 0 100 150" aria-hidden="true"><use href="#kite-color"/></svg>
+      <p class="label">What you'll finish with</p>
+      <div class="browser">
+        <div class="bar"><i></i><i></i><i></i><span class="url">butterlane.vercel.app</span></div>
+        <div class="page">
+          <div class="banner"><b>Baked this morning.</b><span>Small-batch cookies, delivered across Singapore.</span></div>
+          <span class="order">Order this week's box</span>
+          <div class="tiles"><div></div><div></div><div></div></div>
+        </div>
+      </div>
+      <p class="cap">Our practice example: Butter Lane, a home bakery. Swap in your own business any time.</p>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><strong>How to read this page:</strong></span>
+    <span><span class="swap">Yellow text</span> = swap for your own business</span>
+    <span><span class="term">Dotted words</span> = explained in the side note</span>
+    <span><strong>Copy</strong> button = paste straight into Claude</span>
+  </div>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Contents">
+      <p class="label">Contents</p>
+      <ol>
+        <li><a href="#part-1"><b>1</b> Meet Claude</a>
+          <div class="sub"><a href="#s1-1">What is Claude?</a><a href="#s1-2">Claude and other AI</a></div></li>
+        <li><a href="#part-2"><b>2</b> Install</a>
+          <div class="sub"><a href="#s2-1">Desktop app</a><a href="#s2-2">Switch it on</a><a href="#s2-3">Data safety</a><a href="#s2-4">Ready check</a></div></li>
+        <li><a href="#part-3"><b>3</b> Build the example</a>
+          <div class="sub"><a href="#s3-1">The folder</a><a href="#s3-2">Plan</a><a href="#s3-3">Words</a><a href="#s3-4">Look</a><a href="#s3-5">Menu file</a><a href="#s3-6">Build</a><a href="#s3-7">Preview</a></div></li>
+        <li><a href="#part-4"><b>4</b> Put it online</a>
+          <div class="sub"><a href="#s4-0">How it connects</a><a href="#s4-1">Get ready</a><a href="#s4-2">GitHub account</a><a href="#s4-3">Claude does the rest</a><a href="#s4-4">Vercel account</a><a href="#s4-5">Go live</a><a href="#s4-6">Update the menu</a></div></li>
+        <li><a href="#photos"><b>+</b> Photo pack</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <!-- PART 1 -->
+      <section class="part" id="part-1">
+        <div class="part-head">
+          <span class="part-num">1</span>
+          <h2>Meet Claude</h2>
+          <p>Five minutes of context before we click anything. What this thing is, and where it fits next to the other AI tools you've heard of.</p>
+        </div>
+
+        <div class="step" id="s1-1">
+          <div class="step-main">
+            <div class="step-title"><span class="n">1.1</span><h3>What is Claude?</h3></div>
+            <p>Claude is an <a class="term" href="#t-ai">AI assistant</a> made by a company called Anthropic. You talk to it in normal sentences, the same way you'd message a very capable friend, and it writes, plans, explains and builds things for you.</p>
+            <p>The message you type is called a <a class="term" href="#t-prompt">prompt</a>. There's no special language to learn. A clear, specific prompt gets a better result, which is why this page gives you the prompts ready-made.</p>
+            <ul class="kites">
+              <li><span><b>It's good at words:</b> website copy, captions, emails, menus.</span></li>
+              <li><span><b>It can make real files:</b> in the Code tab, it creates a working website inside a folder on your laptop.</span></li>
+              <li><span><b>It asks before acting:</b> you approve the important steps, like putting your site online.</span></li>
+            </ul>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-ai">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>AI assistant<small>New word</small></div>
+              A computer program you talk to in plain language. It has learned from a huge amount of text, so it can answer, write and reason.
+              <div class="eg"><b>Example:</b> you type "Give me 3 names for a cookie shop" and it replies with three names.</div>
+            </div>
+            <div class="note" id="t-prompt">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Prompt<small>New word</small></div>
+              The instruction you type to the AI. Think of it as a brief you'd give a freelancer.
+              <div class="eg"><b>Vague:</b> "make me a website"<br><b>Clear:</b> "plan a 4-page website for my home bakery"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s1-2">
+          <div class="step-main">
+            <div class="step-title"><span class="n">1.2</span><h3>Claude and the other AI tools</h3></div>
+            <p>You've probably heard of ChatGPT or Gemini. They're the same kind of tool as Claude, made by different companies. All of them chat. What's different is <b>where</b> they can work and what they can make.</p>
+            <div class="others">
+              <div><b>ChatGPT</b><span>by OpenAI</span></div>
+              <div><b>Gemini</b><span>by Google</span></div>
+              <div><b>Claude</b><span>by Anthropic · what we use today</span></div>
+            </div>
+            <p>Inside Claude there are three "rooms". Same brain, different room, depending on the job:</p>
+            <div class="rooms" role="table" aria-label="Three ways to work with Claude">
+              <div role="row"><span class="r" role="cell">Chat</span><span role="cell">Think out loud</span><span class="use" role="cell">A caption, an idea, a rewrite, a question</span></div>
+              <div role="row"><span class="r" role="cell">Code<span class="today">today</span></span><span role="cell">Make real things</span><span class="use" role="cell">Your website, real files, putting it online</span></div>
+              <div role="row"><span class="r" role="cell">Design</span><span role="cell">Make it look right</span><span class="use" role="cell">Colours, layouts, graphics</span></div>
+            </div>
+            <p class="muted">We spend almost all of today in <b>Code</b>. Don't let the name scare you: you never write code yourself. You type normal sentences and Claude writes the code.</p>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-code">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Claude Code<small>New word</small></div>
+              The version of Claude that works inside a folder on your computer. It can read the files in there and create new ones.
+              <div class="eg"><b>Example:</b> Chat can <i>describe</i> a homepage. Code actually <i>saves</i> <span class="path">index.html</span> in your folder.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 2 -->
+      <section class="part" id="part-2">
+        <div class="part-head">
+          <span class="part-num">2</span>
+          <h2>Install</h2>
+          <p>Get the app, flip one switch, and set your privacy. Do these together and don't move on until every box in the ready check is ticked. (The GitHub and Vercel accounts come later, in Part 4.)</p>
+        </div>
+
+        <div class="step" id="s2-1">
+          <div class="step-main">
+            <div class="step-title"><span class="n">2.1</span><h3>Install the Claude desktop app</h3></div>
+            <p>Go to <a class="ext" href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai/download</a> and pick your computer. The website version of Claude can't reach the files on your laptop, so for building a site you need the <a class="term" href="#t-app">desktop app</a>.</p>
+            <div class="os">
+              <div>
+                <h4>Mac (macOS 11 or later)</h4>
+                <ol class="do">
+                  <li><span>Download the Mac version</span></li>
+                  <li><span>Open the <code>.dmg</code> file and drag Claude into Applications</span></li>
+                  <li><span>Open Claude and sign in</span></li>
+                </ol>
+              </div>
+              <div>
+                <h4>Windows (10 or later)</h4>
+                <ol class="do">
+                  <li><span>Download the Windows version</span></li>
+                  <li><span>Run the installer and follow the prompts</span></li>
+                  <li><span>Open Claude from the Start menu and sign in</span></li>
+                </ol>
+              </div>
+            </div>
+            <p>Once you're in, check two things: you're on the <a class="term" href="#t-pro">Pro plan</a> or above (compare plans at <a class="ext" href="https://claude.com/pricing" target="_blank" rel="noopener">claude.com/pricing</a>), and you can see a <b>Code</b> tab next to <b>Chat</b>.</p>
+            <div class="tip"><b>No Code tab?</b>Update the app to the latest version, quit it fully, and open it again.</div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-app">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Desktop app<small>New word</small></div>
+              A program installed on your computer, instead of a website in your browser.
+              <div class="eg"><b>Example:</b> Spotify in your browser vs. the Spotify app in your dock. Same account, but the app can do more on your machine.</div>
+            </div>
+            <div class="note" id="t-pro">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Pro plan<small>New word</small></div>
+              Claude's paid monthly subscription. The free plan doesn't include the Code tab.
+              <div class="eg"><b>Check it:</b> click your name at the bottom-left, then look under Settings for your plan.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s2-2">
+          <div class="step-main">
+            <div class="step-title"><span class="n">2.2</span><h3>Switch on file creation</h3></div>
+            <p>This lets Claude actually create files, instead of only talking about them.</p>
+            <ol class="do">
+              <li><span>Open <b>Settings</b>, then <b>Capabilities</b></span></li>
+              <li><span>Turn on <b>Code execution and file creation</b></span></li>
+            </ol>
+            <div class="tip"><b>Remember this one</b>If things "aren't showing up" later, it's almost always this switch.</div>
+          </div>
+          <div class="notes"></div>
+        </div>
+
+        <div class="step" id="s2-3">
+          <div class="step-main">
+            <div class="step-title"><span class="n">2.3</span><h3>Keep your data safe</h3></div>
+            <p>You're about to give Claude your business files. While you're in Settings, take two minutes to decide what Claude can keep and learn from.</p>
+            <ol class="do">
+              <li><span>Open <b>Settings</b>, then <b>Privacy</b></span></li>
+              <li><span>Find <b>Help improve Claude</b>. When it's on, your chats may be used to <a class="term" href="#t-training">train</a> future versions of Claude. It's your choice: turn it off if you'd rather they weren't.</span></li>
+              <li><span>You can delete any chat from your history at any time</span></li>
+            </ol>
+            <p><b>House rules</b> for the rest of this guide and beyond:</p>
+            <ul class="kites">
+              <li><span><b>Never paste</b> passwords, bank or card numbers, or NRIC and passport numbers into Claude.</span></li>
+              <li><span><b>Customer details are personal data.</b> Don't paste customer names, phone numbers or addresses. In Singapore, the PDPA covers how you handle them.</span></li>
+              <li><span><b>Only put in the site folder what you'd show a stranger.</b> Anything in that folder can end up on your public website.</span></li>
+              <li><span><b>Read before you click Allow.</b> The Code tab asks before doing things. Not sure? Type "What does this do?" first.</span></li>
+              <li><span><b>Download only from the real sites:</b> <a class="ext" href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai</a>, <a class="ext" href="https://github.com" target="_blank" rel="noopener">github.com</a>, <a class="ext" href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a>.</span></li>
+            </ul>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-training">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Training<small>New word</small></div>
+              How AI models learn: by studying lots of examples. The setting decides whether your conversations can be part of those examples.
+              <div class="eg"><b>Off:</b> your bakery plans stay in your account and aren't used to improve Claude.</div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Menu names can move<small>Good to know</small></div>
+              Apps update often. If <b>Privacy</b> isn't where this says, search Settings for "privacy" or "improve".
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s2-4">
+          <div class="step-main">
+            <div class="step-title"><span class="n">2.4</span><h3>Ready check</h3></div>
+            <p>Tick these off. Your ticks are saved in this browser.</p>
+            <ul class="check">
+              <li><label><input type="checkbox" id="rc-1" data-save><span><b>Desktop app open and signed in</b><small>On the laptop you'll build on</small></span></label></li>
+              <li><label><input type="checkbox" id="rc-2" data-save><span><b>Pro plan or above</b><small>Settings shows your plan</small></span></label></li>
+              <li><label><input type="checkbox" id="rc-3" data-save><span><b>Code tab visible</b><small>Next to Chat</small></span></label></li>
+              <li><label><input type="checkbox" id="rc-4" data-save><span><b>File creation switched on</b><small>Settings › Capabilities</small></span></label></li>
+              <li><label><input type="checkbox" id="rc-5" data-save><span><b>Privacy setting chosen, house rules read</b><small>Settings › Privacy</small></span></label></li>            </ul>
+          </div>
+          <div class="notes"></div>
+        </div>
+      </section>
+
+      <!-- PART 3 -->
+      <section class="part" id="part-3">
+        <div class="part-head">
+          <span class="part-num">3</span>
+          <h2>Build the example</h2>
+          <p>We build a real site for a practice business, one small prompt at a time. Plan, words, look, menu, then the whole site. Every prompt works for your own business too: just change the yellow parts.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-main">
+            <div class="brief">
+              <p class="label">Practice business</p>
+              <h4>Butter Lane</h4>
+              <dl>
+                <dt>What</dt><dd>Small-batch cookies and bakes from a home kitchen in Singapore. $12–28 a box.</dd>
+                <dt>Who buys</dt><dd>People aged 25–45, office workers and parents. Gifts, office treats, weekend cravings. Most find us on Instagram.</dd>
+                <dt>Voice</dt><dd>Warm, homemade, a little cheeky. Like a friend who bakes. Never corporate.</dd>
+                <dt>Orders</dt><dd>Through WhatsApp and Instagram DMs.</dd>
+                <dt>The job</dt><dd>A 4-page website: Home, About, Menu, Contact &amp; order.</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Your own business?<small>Swap</small></div>
+              Write these four lines for your business first. It takes five minutes and makes every prompt below work better.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s3-1">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.1</span><h3>Make the folder and point Claude at it</h3></div>
+            <p>Here's the part nobody tells you: Claude Code works inside <b>one <a class="term" href="#t-folder">folder</a></b>. It reads what's in there, and everything it makes lands in there.</p>
+            <ol class="do">
+              <li><span>Open your <a class="term" href="#t-home">home folder</a>. <b>Mac:</b> in Finder, press <span class="ui">Shift + Cmd + H</span>. <b>Windows:</b> in File Explorer, type <code>%USERPROFILE%</code> in the address bar and press Enter.</span></li>
+              <li><span>Make a folder called <code>Websites</code>. Every site you build from now on goes in here.</span></li>
+              <li><span>Inside <code>Websites</code>, make a folder called <span class="swap">butter-lane-site</span>. Lowercase, dashes, no spaces.</span></li>
+              <li><span>Inside that, make a folder called <code>photos</code> and drop in 5–10 photos of your products. No photos yet? Use the <a href="#photos">starter photo pack</a>.</span></li>
+              <li><span>Open Claude, go to the <b>Code</b> tab, and choose the <span class="swap">butter-lane-site</span> folder</span></li>
+            </ol>
+            <p>Only three things are yours to put in. Everything else, Claude makes:</p>
+<div class="folder">
+              <div>
+                <p class="label">You put in — three things</p>
+                <ul class="kites">
+                  <li><span><code>brand-guide.md</code><br><span class="muted">Who you are and how you sound</span></span></li>
+                  <li><span><code>menu.md</code><br><span class="muted">What you sell, and the prices</span></span></li>
+                  <li><span><code>photos/</code><br><span class="muted">A folder with 5–10 pictures</span></span></li>
+                </ul>
+                <p class="muted opt">Got real customer reviews? Add <code>reviews.md</code> too. Not essential.</p>
+              </div>
+              <div class="made">
+                <p class="label">Claude adds the rest</p>
+                <ul class="kites">
+                  <li><span><code>products.md</code><br><span class="muted">Your menu in one editable file · step 3.5</span></span></li>
+                  <li><span><code>index.html</code> and friends<br><span class="muted">The website itself · step 3.6</span></span></li>
+                </ul>
+                <p class="muted opt">You never open these. Claude writes and changes them for you.</p>
+              </div>
+            </div>
+            <p>No brand guide or menu files yet? Let Claude draft them. Paste this into the Code tab:</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">I'm building a website for <span class="swap">Butter Lane, a small home bakery in Singapore</span>. Create three short starter files in this folder:
+
+1. brand-guide.md: what we sell, who we sell to, our voice (<span class="swap">warm, homemade, a little cheeky</span>) and words we never use.
+2. menu.md: <span class="swap">8 bakes</span>, each with a name, price and a one-line description.
+3. reviews.md: <span class="swap">8 short customer reviews</span>, clearly marked SAMPLE at the top.
+
+Ask me questions first if anything important is missing.</pre>
+            </div>
+            <p>Then check Claude is looking in the right place:</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">What files can you see in this folder? List them, with one line on what each one is for.</pre>
+            </div>
+            <div class="tip"><b>Before going live</b>Replace sample reviews with real ones from real customers. Never publish made-up reviews.</div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-home">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Home folder<small>New word</small></div>
+              Your own private folder on the laptop, named after your user account. A safer spot than the Desktop.
+              <div class="eg"><b>Mac:</b> <span class="path">/Users/yourname/Websites</span><br><b>Windows:</b> <span class="path">C:\Users\yourname\Websites</span></div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Why not the Desktop?<small>Good to know</small></div>
+              Desktop and Documents are often synced to iCloud or OneDrive. Syncing can clash with GitHub, or move files off the laptop so Claude can't find them. Avoid Downloads too: it gets cleared out.
+            </div>
+            <div class="note" id="t-folder">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Folder<small>New word</small></div>
+              Claude's workspace. It only sees what's inside the folder you choose, nothing else on your laptop.
+              <div class="eg"><b>Think of it as:</b> the desk you hand a freelancer. They work with what's on the desk.</div>
+            </div>
+            <div class="note" id="t-md">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>.md file<small>New word</small></div>
+              "Markdown": a plain text file with light formatting. Easy for you to read and edit, easy for Claude to use.
+              <div class="eg"><b>Inside menu.md:</b><br><span class="path"># Cookies</span><br><span class="path">- Choc chip · $12 a box</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s3-2">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.2</span><h3>Plan before you build</h3></div>
+            <p>It's much cheaper to argue with a plan than with a finished website. Ask for a one-page plan and wait before building.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Before building anything, plan <span class="swap">my bakery's</span> website. Use brand-guide.md and menu.md in this folder.
+
+1. Propose the pages. I'm thinking home, about, menu, contact &amp; order. Push back if that's wrong for <span class="swap">a home bakery</span>.
+2. The homepage: what must a first-time visitor see on the very first screen?
+3. Where do customer reviews earn their place?
+
+Keep the plan to one page. Wait for my OK before building.</pre>
+            </div>
+            <p class="muted">Read the plan and reply in plain words, like "Put the menu higher" or "Less about me, more about the bakes." When you're happy, say "OK, go ahead."</p>
+          </div>
+          <div class="notes"></div>
+        </div>
+
+        <div class="step" id="s3-3">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.3</span><h3>Write the homepage words</h3></div>
+            <p>Words first, design second. Good words make even a simple design feel professional.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Write the homepage copy and save it as homepage-copy.md.
+
+- A hero line that says what we sell and for whom: <span class="swap">cookies and bakes from a home kitchen, delivered across Singapore</span>. Eight words or fewer.
+- Three short sections: <span class="swap">this week's bakes · how ordering works · who's baking</span>
+- Two real quotes from reviews.md
+- One clear call to action: <span class="swap">"Order this week's box"</span>
+
+Use the voice in brand-guide.md. No template words. Nothing you'd read on any other <span class="swap">bakery's</span> site.</pre>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-hero">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Hero &amp; call to action<small>New words</small></div>
+              The <b>hero</b> is the big first thing you see on a website. A <b>call to action</b> is the main button telling visitors what to do next.
+              <div class="eg"><b>Example:</b> hero "Baked this morning." and a button "Order this week's box".</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s3-4">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.4</span><h3>Choose the look from your photos</h3></div>
+            <p>Your colours should come from your own products, not from a trend. Ask to see options before Claude styles everything.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Propose the look for the website: a five-colour palette drawn from the photos in the photos folder, one display font and one body font.
+
+It should feel <span class="swap">warm and friendly, easy to read on a phone</span>. Avoid <span class="swap">anything luxury-minimal-beige. It's cookies, not couture</span>.
+
+Show me the colour swatches and one sample section before styling the whole site.</pre>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-palette">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Palette &amp; fonts<small>New words</small></div>
+              A <b>palette</b> is the small set of colours used everywhere. A <b>display font</b> is for big headings; a <b>body font</b> is for normal reading text.
+              <div class="eg"><b>Example:</b> butter yellow, cocoa brown, cream, cherry red, soft white.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s3-5">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.5</span><h3>Put your menu in one file</h3></div>
+            <p>Your site shouldn't break the day you change a price. So the menu lives in one simple file, and the Menu page reads from it. You'll use this again in step 4.2.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Create products.md from menu.md. For each item: name, price, one-line description, which photo, and available: yes/no.
+
+Build the menu page to read from products.md, so when I edit that file and redeploy, the site updates.
+
+Mark <span class="swap">two items</span> as available: no, so I can see how sold-out looks.</pre>
+            </div>
+          </div>
+          <div class="notes"></div>
+        </div>
+
+        <div class="step" id="s3-6">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.6</span><h3>One prompt, whole site</h3></div>
+            <p>Everything is ready. This is the big one. It can take a few minutes, and Claude may ask you to approve some steps along the way: read what it asks and click allow.</p>
+            <p><b>First, get your two order links ready.</b> Customers tap a button on your site and land straight in a chat with you.</p>
+            <div class="builder">
+              <p class="label">WhatsApp link maker</p>
+              <div class="builder-row">
+                <label for="wa-num"><span>Your WhatsApp number, with country code</span><input id="wa-num" type="tel" inputmode="tel" autocomplete="off" value="+65 9123 4567"></label>
+                <label for="wa-msg"><span>First message, typed in for the customer</span><input id="wa-msg" type="text" autocomplete="off" value="Hi Butter Lane! I'd like to order a box of "></label>
+              </div>
+              <div class="builder-out">
+                <code id="wa-out">https://wa.me/6591234567</code>
+                <div class="builder-btns">
+                  <button class="copy" id="wa-copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy link</span></button>
+                  <a class="btn" id="wa-test" href="https://wa.me/6591234567" target="_blank" rel="noopener">Test it ↗</a>
+                </div>
+              </div>
+              <p class="builder-ig"><b>Instagram link:</b> <code>https://instagram.com/</code> plus your username, like <code>https://instagram.com/<span class="swap">butterlane.sg</span></code></p>
+            </div>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Build <span class="swap">my bakery's</span> website in this folder. Use brand-guide.md, menu.md, reviews.md, products.md, homepage-copy.md and the photos folder. Don't invent facts. If something is missing, ask me.
+
+Pages:
+1. Home: hero, this week's bakes, two review quotes, one order button
+2. About: <span class="swap">who's baking and why</span>, short
+3. Menu: reads from products.md, photo-first
+4. Contact &amp; order: an "Order on WhatsApp" button linking to <span class="swap">https://wa.me/6591234567</span>, an Instagram link to <span class="swap">https://instagram.com/butterlane.sg</span>, and <span class="swap">delivery info</span>. Put the WhatsApp button on the homepage too.
+
+Design: the look we agreed. Big type, generous space, our photos doing the talking. Mobile first, because <span class="swap">most of my customers are on their phones</span>.
+
+Keep it simple to host: plain HTML, CSS and JavaScript, no build tools, with index.html at the top of this folder. Save everything as website files here.</pre>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-html">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>HTML<small>New word</small></div>
+              The language web pages are written in. You'll see new files like <span class="path">index.html</span> appear in your folder. You don't need to open or edit them.
+              <div class="eg"><b>Example:</b> <span class="path">index.html</span> is the homepage, <span class="path">menu.html</span> is the menu page.</div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Need a WhatsApp connector?<small>No</small></div>
+              A <b>wa.me link</b> is just a web address. Tapping it opens WhatsApp with a chat to your number. No connector, no account setup, nothing to pay.
+              <div class="eg"><b>Nice extra:</b> the free <a href="https://www.whatsapp.com/business" target="_blank" rel="noopener">WhatsApp Business</a> app adds opening hours and an automatic greeting.</div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Why not an order form?<small>Good to know</small></div>
+              A form needs somewhere to send and store orders, which is a bigger project. Chat links work on day one.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s3-7">
+          <div class="step-main">
+            <div class="step-title"><span class="n">3.7</span><h3>Look at it and refine</h3></div>
+            <p>Right now the site only exists on your laptop. Ask Claude to open a <a class="term" href="#t-preview">preview</a>:</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Open the website in my browser so I can see it.</pre>
+            </div>
+            <p>Then fix things in plain words, one or two at a time. Tap any of these to copy it:</p>
+            <div class="chips">
+              <button class="chip" type="button"><svg width="13" height="13" aria-hidden="true"><use href="#copyi"/></svg><span>Make the hero feel warmer.</span></button>
+              <button class="chip" type="button"><svg width="13" height="13" aria-hidden="true"><use href="#copyi"/></svg><span>Make the menu photos bigger.</span></button>
+              <button class="chip" type="button"><svg width="13" height="13" aria-hidden="true"><use href="#copyi"/></svg><span>The About page is too long. Cut it in half.</span></button>
+              <button class="chip" type="button"><svg width="13" height="13" aria-hidden="true"><use href="#copyi"/></svg><span>Check how every page looks on a phone and fix anything that breaks.</span></button>
+              <button class="chip" type="button"><svg width="13" height="13" aria-hidden="true"><use href="#copyi"/></svg><span>Read the site as a first-time customer. What's confusing or missing?</span></button>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-preview">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Preview (localhost)<small>New word</small></div>
+              Viewing the site in your browser while it still lives only on your computer. Nobody else can see it yet.
+              <div class="eg"><b>Example:</b> an address like <span class="path">localhost:3000</span> in the browser bar. "Local host" means "this computer".</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 4 -->
+      <section class="part" id="part-4">
+        <div class="part-head">
+          <span class="part-num">4</span>
+          <h2>Put it online</h2>
+          <p>Your site works on your laptop. To put it on the internet you need two free accounts, GitHub and Vercel. Claude does the fiddly parts. You do the sign-ups and the clicking.</p>
+        </div>
+
+        <div class="step" id="s4-0">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.0</span><h3>How the pieces connect</h3></div>
+            <p>Three places, one path. Knowing this picture makes every step below make sense.</p>
+            <div class="flow" aria-label="Your folder goes to GitHub, then Vercel makes it a live website">
+              <div class="box"><b>Your folder</b><span>On your laptop. Claude builds and changes the site here.</span></div>
+              <span class="arr"><i aria-hidden="true"></i><small>Claude pushes</small></span>
+              <div class="box"><b>GitHub</b><span>Keeps a copy of the folder online, plus every past version.</span></div>
+              <span class="arr"><i aria-hidden="true"></i><small>automatic</small></span>
+              <div class="box live"><b>Vercel</b><span>Turns that copy into a live website with a real link.</span></div>
+            </div>
+            <p class="muted">After today, changing your site is one message to Claude. It updates the files, sends them to GitHub, and Vercel puts the new version online within about a minute.</p>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-github">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>GitHub<small>New word</small></div>
+              A website that stores project folders online and remembers every version. Owned by Microsoft, free for what we need.
+              <div class="eg"><b>Think of it as:</b> Google Drive for websites, with an "undo" for every change you've ever made.</div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Why two services?<small>Good to know</small></div>
+              GitHub <b>stores</b> your site. Vercel <b>shows</b> it to the world. Linking them means you never upload files by hand.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-1">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.1</span><h3>Get the folder ready for hosting</h3></div>
+            <p>A few things that work on your laptop can break online. Let Claude check them first. Stay in the Code tab, in your site folder:</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Get this website ready to put on GitHub and host on Vercel:
+
+1. The homepage must be called index.html and sit at the top level of this folder, not inside another folder.
+2. The menu page must still load products.md when the site is online, not only on my laptop.
+3. Keep it plain HTML, CSS and JavaScript with no build step. If anything needs one, tell me and simplify it.
+4. Photo file names should be lowercase with no spaces, and every link to a photo must match the name exactly.
+5. Make any photo over 1 MB smaller, so the site loads fast on phones.
+6. Add a .gitignore file that leaves out system files like .DS_Store.
+
+Then tell me in simple words what you changed.</pre>
+            </div>
+            <p class="muted">After it finishes, open the preview one more time (step 3.7) and click through every page.</p>
+          </div>
+          <div class="notes">
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Why file names matter<small>Good to know</small></div>
+              Your laptop treats <span class="path">Cookie.JPG</span> and <span class="path">cookie.jpg</span> as the same file. The internet doesn't. Mismatched names are the #1 cause of missing photos.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-2">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.2</span><h3>Create a GitHub account</h3></div>
+            <p>This is the one part Claude can't do for you: the account is yours.</p>
+            <ol class="do">
+              <li><span>Go to <a class="ext" href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a></span></li>
+              <li><span>Enter your email and create a password</span></li>
+              <li><span>Choose a <a class="term" href="#t-username">username</a>. It shows up publicly, so keep it clean: <span class="swap">butterlane-sg</span></span></li>
+              <li><span>Complete the verification puzzle and type in the code GitHub emails you</span></li>
+              <li><span>If it asks about plans, choose <b>Free</b> and skip the questions</span></li>
+            </ol>
+            <div class="tip"><b>Tip</b>Use the same email for Vercel later, and save the password in your password manager.</div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-username">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Username<small>New word</small></div>
+              Your public name on GitHub. It becomes part of your project's address there.
+              <div class="eg"><b>Example:</b> <span class="path">github.com/butterlane-sg</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-3">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.3</span><h3>Let Claude put the folder on GitHub</h3></div>
+            <p>One prompt. Claude checks what's installed, helps you sign in, creates a private <a class="term" href="#t-repo">repository</a> and sends your files up.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Put this folder on GitHub for me. I've never used GitHub before, so keep it simple.
+
+1. Check whether git and the GitHub CLI (gh) are installed. If either is missing, tell me the easiest way to install it on my computer, then wait for me.
+2. Sign me in with gh auth login. Tell me exactly what to click and where to paste the code.
+3. Create a new PRIVATE repository called <span class="swap">butter-lane-site</span> and push everything in this folder to it.
+4. Give me the link to the repository at the end.
+
+Before each command, say in one plain sentence what it does. Stop and ask me if anything needs a password.</pre>
+            </div>
+            <ol class="do">
+              <li><span>Paste the prompt and approve each step Claude asks about</span></li>
+              <li><span>When the sign-in starts, a browser window opens. Paste the code Claude shows you and click <span class="ui">Authorize</span>.</span></li>
+              <li><span>Check it worked: on <a class="ext" href="https://github.com" target="_blank" rel="noopener">github.com</a>, click your profile picture, then <b>Your repositories</b>. Open <span class="swap">butter-lane-site</span> and make sure <code>index.html</code> is in the list, not inside another folder.</span></li>
+            </ol>
+            <div class="tip"><b>If it gets stuck</b>There's a click-only way to do the same thing: install <a class="ext" href="https://desktop.github.com" target="_blank" rel="noopener">desktop.github.com</a>, sign in, then <span class="ui">File › Add Local Repository</span> → <span class="ui">create a repository</span> → <span class="ui">Publish repository</span>, with <b>Keep this code private</b> ticked.</div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-repo">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Repository<small>New word</small></div>
+              A project folder stored on GitHub with its full history, often shortened to "repo". Yours lives on your laptop and on GitHub, kept in sync.
+              <div class="eg"><b>Example:</b> <span class="path">github.com/butterlane-sg/butter-lane-site</span></div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Private repo, public site<small>Good to know</small></div>
+              "Private" hides your files on GitHub. The website Vercel builds from them is still public for customers.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-4">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.4</span><h3>Create a Vercel account with GitHub</h3></div>
+            <ol class="do">
+              <li><span>Go to <a class="ext" href="https://vercel.com/signup" target="_blank" rel="noopener">vercel.com/signup</a></span></li>
+              <li><span>Choose the <a class="term" href="#t-hobby">Hobby</a> plan, type your name, and continue</span></li>
+              <li><span>Click <span class="ui">Continue with GitHub</span>. This links the two accounts.</span></li>
+              <li><span>In the GitHub window, click <span class="ui">Authorize Vercel</span></span></li>
+              <li><span>You land on your Vercel dashboard. Leave this tab open.</span></li>
+            </ol>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-hobby">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Hobby plan<small>Read this</small></div>
+              Vercel's free plan. It's meant for personal, non-commercial projects, which is perfect for practising.
+              <div class="eg"><b>Running a real business on it?</b> Check <a href="https://vercel.com/pricing" target="_blank" rel="noopener">vercel.com/pricing</a> first. Commercial sites are meant to be on the paid Pro plan.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-5">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.5</span><h3>Import the repo and deploy</h3></div>
+            <p>This is the moment it goes live. It's called <a class="term" href="#t-deploy">deploying</a>.</p>
+            <ol class="do">
+              <li><span>On the Vercel dashboard, click <span class="ui">Add New…</span> and choose <span class="ui">Project</span></span></li>
+              <li><span>Under <b>Import Git Repository</b>, find <span class="swap">butter-lane-site</span> and click <span class="ui">Import</span></span></li>
+              <li><span><b>Not in the list?</b> Click <span class="ui">Adjust GitHub App Permissions</span>, choose <b>Only select repositories</b>, pick your repo, click <span class="ui">Install</span> or <span class="ui">Save</span>, then come back</span></li>
+              <li><span><b>Project Name:</b> this becomes your address. <span class="swap">butter-lane</span> gives <code>butter-lane.vercel.app</code>. If someone already has it, Vercel adds a few extra letters.</span></li>
+              <li><span><b>Framework Preset:</b> choose <b>Other</b>. <b>Root Directory:</b> leave as <code>./</code>. Leave the build settings empty.</span></li>
+              <li><span>Click <span class="ui">Deploy</span> and wait about a minute</span></li>
+              <li><span>When you see the congratulations screen, go to the dashboard and click <span class="ui">Visit</span></span></li>
+              <li><span>Open the link on your phone, then send it to one real person</span></li>
+            </ol>
+            <p><b>If something looks wrong</b>, find your problem here:</p>
+            <div class="fix">
+              <div><span class="err">404: NOT_FOUND</span><span><code>index.html</code> isn't at the top of the repo. Use the prompt below and Claude will fix and re-send it.</span></div>
+              <div><span class="err">Build failed</span><span>Check the Framework Preset is <b>Other</b> with no build command. Still failing? Use the prompt below.</span></div>
+              <div><span class="err">Menu page is empty</span><span>The menu can't find <code>products.md</code> online. Use the prompt below and describe it.</span></div>
+              <div><span class="err">Photos missing</span><span>File names don't match exactly. Capital letters count online.</span></div>
+            </div>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">When it breaks · copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">My site is deployed on Vercel from GitHub, but something is wrong: <span class="swap">the menu page is empty on the live link, but it works on my laptop</span>.
+
+Here is the error from Vercel, if there is one: <span class="swap">paste the red error text here</span>
+
+Find the cause in this folder, fix it, then commit and push the fix to GitHub so Vercel updates. Explain what was wrong in simple words.</pre>
+            </div>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-deploy">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Deploy<small>New word</small></div>
+              Copying your website to a computer that's always online, so anyone in the world can open it.
+              <div class="eg"><b>Think of it as:</b> moving your bakery from your kitchen to a shop on the street.</div>
+            </div>
+            <div class="note" id="t-preset">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Framework Preset<small>New word</small></div>
+              Tells Vercel what kind of site this is. Big web apps use frameworks. Ours is plain files, so the answer is "Other".
+            </div>
+            <div class="note" id="t-url">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>URL &amp; domain<small>New words</small></div>
+              A <b>URL</b> is a website's address. A <b>domain</b> is a name you own, like a shop sign.
+              <div class="eg"><b>Free:</b> <span class="path">butter-lane.vercel.app</span><br><b>Your own (paid, yearly):</b> <span class="path">butterlane.sg</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="s4-6">
+          <div class="step-main">
+            <div class="step-title"><span class="n">4.6</span><h3>Change the menu, update the live site</h3></div>
+            <p>This is the loop you'll use every week, and it's one message. Claude changes the files, <a class="term" href="#t-push">pushes</a> them to GitHub, and Vercel puts the new version online by itself. The link never changes.</p>
+            <div class="prompt">
+              <div class="prompt-head"><span class="where">Copy into the Code tab</span><button class="copy" type="button"><svg width="15" height="15" aria-hidden="true"><use href="#copyi"/></svg><span>Copy</span></button></div>
+<pre class="prompt-body">Update products.md: <span class="swap">the chocolate chip cookies are now $14 a box, the matcha cookies are sold out this week, and add pistachio butter cookies at $16 a box</span>.
+
+Open the menu page in my browser so I can check it first. Once I say OK, commit the change with a clear message and push it to GitHub.</pre>
+            </div>
+            <ol class="do">
+              <li><span>Check the preview, then tell Claude to go ahead</span></li>
+              <li><span>In Vercel, open your project and go to <b>Deployments</b>. Wait until the newest one says <b>Ready</b>, usually about a minute.</span></li>
+              <li><span>Refresh your live link. Same address, new menu.</span></li>
+            </ol>
+            <p class="muted">Prefer to change it yourself? Open <code>products.md</code> in any text editor, edit the line, save, then tell Claude: "Commit and push my change."</p>
+          </div>
+          <div class="notes">
+            <div class="note" id="t-push">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Commit &amp; push<small>New words</small></div>
+              A <b>commit</b> is a saved checkpoint with a short label. A <b>push</b> sends your commits up to GitHub, and Vercel updates the site straight after.
+              <div class="eg"><b>Example label:</b> "Update prices and sold-out items"</div>
+            </div>
+            <div class="note">
+              <div class="t"><svg width="16" height="18" aria-hidden="true"><use href="#kite"/></svg>Nothing changed online?<small>Fix</small></div>
+              Ask Claude: "Did the push work? Show me the last commit." Changes that are committed but not pushed stay on your laptop.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="part" id="photos">
+        <div class="part-head">
+          <span class="part-num"><svg width="64" height="96" viewBox="0 0 100 150" aria-hidden="true"><use href="#kite-color"/></svg></span>
+          <h2>Starter photo pack</h2>
+          <p>No product photos yet? Download these five practice photos for Butter Lane and drop them into your <code>photos</code> folder (step 3.1). When you build for your real business, swap in your own.</p>
+        </div>
+        <div class="pack-bar">
+          <a class="btn primary" href="photos/butter-lane-photos.zip" download>Download all 5 (.zip)</a>
+          <span class="muted">JPG · 1600px wide · free under the <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash License</a></span>
+        </div>
+        <div class="pack">
+              <figure class="shot">
+                <img src="photos/butter-lane-01-gift-box.jpg" alt="Cookies packed in a kraft gift box" loading="lazy" width="1600" height="1200">
+                <figcaption>
+                  <code>butter-lane-01-gift-box.jpg</code>
+                  <span class="use">Try it for: Order button, gifting</span>
+                  <span class="credit">Photo: <a href="https://unsplash.com/photos/brown-and-purple-bread-in-brown-cardboard-box-H1uISjlRXJE" target="_blank" rel="noopener">Conor Brown / Unsplash</a></span>
+                  <a class="dl" href="photos/butter-lane-01-gift-box.jpg" download>Download</a>
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img src="photos/butter-lane-02-milk-stack.jpg" alt="A stack of cookies with a glass of milk" loading="lazy" width="1600" height="2400">
+                <figcaption>
+                  <code>butter-lane-02-milk-stack.jpg</code>
+                  <span class="use">Try it for: Homepage hero</span>
+                  <span class="credit">Photo: <a href="https://unsplash.com/photos/a-stack-of-chocolate-chip-cookies-on-a-plate-next-to-a-glass-of-milk-qr7tDK1vG5Q" target="_blank" rel="noopener">Fernanda Martinez / Unsplash</a></span>
+                  <a class="dl" href="photos/butter-lane-02-milk-stack.jpg" download>Download</a>
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img src="photos/butter-lane-03-cooling-rack.jpg" alt="Fresh cookies on a cooling rack" loading="lazy" width="1600" height="1067">
+                <figcaption>
+                  <code>butter-lane-03-cooling-rack.jpg</code>
+                  <span class="use">Try it for: This week's bakes</span>
+                  <span class="credit">Photo: <a href="https://unsplash.com/photos/brown-cookies-on-black-metal-grill-krNP2ESq-54" target="_blank" rel="noopener">Joshua Bedford / Unsplash</a></span>
+                  <a class="dl" href="photos/butter-lane-03-cooling-rack.jpg" download>Download</a>
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img src="photos/butter-lane-04-wooden-spoon.jpg" alt="Cookies with a wooden spoon and flour" loading="lazy" width="1600" height="2400">
+                <figcaption>
+                  <code>butter-lane-04-wooden-spoon.jpg</code>
+                  <span class="use">Try it for: About page</span>
+                  <span class="credit">Photo: <a href="https://unsplash.com/photos/a-table-topped-with-chocolate-chip-cookies-and-a-wooden-spoon-P4EtUOqkKfc" target="_blank" rel="noopener">Fernanda Martinez / Unsplash</a></span>
+                  <a class="dl" href="photos/butter-lane-04-wooden-spoon.jpg" download>Download</a>
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img src="photos/butter-lane-05-flatlay.jpg" alt="Cookies on white linen, from above" loading="lazy" width="1600" height="2226">
+                <figcaption>
+                  <code>butter-lane-05-flatlay.jpg</code>
+                  <span class="use">Try it for: Menu tiles</span>
+                  <span class="credit">Photo: <a href="https://unsplash.com/photos/brown-cookies-on-white-textile-rjf4FcmERGc" target="_blank" rel="noopener">Rumeysa Aydin / Unsplash</a></span>
+                  <a class="dl" href="photos/butter-lane-05-flatlay.jpg" download>Download</a>
+                </figcaption>
+              </figure>
+        </div>
+        <div class="tip"><b>Unzipping</b>Mac: double-click the .zip. Windows: right-click it, choose Extract All. Then move the five photos into <code>photos</code>.</div>
+      </section>
+
+      <section class="finish" aria-labelledby="finish-h">
+        <svg class="big" viewBox="0 0 100 150" aria-hidden="true"><use href="#kite-color"/></svg>
+        <p class="label" style="margin-bottom:14px">You did it</p>
+        <h2 id="finish-h">You came in with an idea. <span>You leave with a link.</span></h2>
+        <div class="later">
+          <div><b>This week</b>Swap the samples for real reviews and real photos, then redeploy.</div>
+          <div><b>Share it</b>Put the link in your Instagram bio and send it to five customers.</div>
+          <div><b>Later</b>Buy your own domain and ask Claude to connect it to Vercel.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <a class="brand" href="https://kitecollective.co/" style="color:var(--ink)"><svg width="22" height="26" aria-hidden="true"><use href="#kite"/></svg>Kite Collective</a>
+    <span>AI education in Singapore &amp; online · <a href="https://kitecollective.co/">kitecollective.co</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  function copyText(text){
+    if(navigator.clipboard && window.isSecureContext){
+      return navigator.clipboard.writeText(text).catch(function(){return fallback(text)});
+    }
+    return Promise.resolve(fallback(text));
+  }
+  function fallback(text){
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);
+  }
+  function flash(btn,label){
+    var span=btn.querySelector('span');var old=span.textContent;
+    btn.classList.add('done');if(label)span.textContent=label;
+    setTimeout(function(){btn.classList.remove('done');span.textContent=old},1600);
+  }
+  document.querySelectorAll('.prompt').forEach(function(p){
+    var btn=p.querySelector('.copy'),body=p.querySelector('.prompt-body');
+    btn.addEventListener('click',function(){copyText(body.textContent.trim()).then(function(){flash(btn,'Copied')})});
+  });
+  document.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click',function(){copyText(c.querySelector('span').textContent).then(function(){flash(c)})});
+  });
+
+
+  // WhatsApp link maker
+  var num=document.getElementById('wa-num'),msg=document.getElementById('wa-msg'),out=document.getElementById('wa-out'),test=document.getElementById('wa-test'),wcopy=document.getElementById('wa-copy');
+  function waLink(){
+    var digits=num.value.replace(/\D/g,'');
+    var url='https://wa.me/'+(digits||'6591234567');
+    if(msg.value.trim()) url+='?text='+encodeURIComponent(msg.value);
+    out.textContent=url;test.href=url;return url;
+  }
+  if(num){num.addEventListener('input',waLink);msg.addEventListener('input',waLink);waLink();
+    wcopy.addEventListener('click',function(){copyText(waLink()).then(function(){flash(wcopy,'Copied')})});}
+
+  // ready-check ticks, remembered per browser
+  document.querySelectorAll('input[data-save]').forEach(function(box){
+    try{box.checked=localStorage.getItem('kc-web-'+box.id)==='1'}catch(e){}
+    box.addEventListener('change',function(){try{localStorage.setItem('kc-web-'+box.id,box.checked?'1':'0')}catch(e){}});
+  });
+
+  // highlight current section in contents
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  var targets=links.map(function(a){return document.querySelector(a.getAttribute('href'))}).filter(Boolean);
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting)return;
+        var id='#'+en.target.id;
+        var isPart=/^#part-/.test(id);
+        links.forEach(function(a){
+          var href=a.getAttribute('href');
+          if(isPart? /^#part-/.test(href) : !/^#part-/.test(href)) a.classList.toggle('on',href===id);
+          if(!isPart && /^#part-/.test(href)) a.classList.toggle('on',href==='#part-'+en.target.id.charAt(1));
+        });
+      });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    targets.forEach(function(t){io.observe(t)});
+  }
+})();
+</script>

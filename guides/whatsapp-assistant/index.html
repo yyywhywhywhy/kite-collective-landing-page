@@ -107,6 +107,17 @@
   .signup.on-dark input { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.28); color:#F2F8FD; }
   .signup.on-dark input::placeholder { color:#9FB4C9; }
   .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .sitebar { display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; justify-content:space-between; max-width:1280px; margin:0 auto; padding:14px 20px; border-bottom:1.5px solid var(--line); }
+  .sitebar .home { display:flex; align-items:center; gap:9px; font:600 16px var(--body); color:var(--ink); text-decoration:none; }
+  .sitebar .mark { font-size:19px; }
+  .sitebar nav { display:flex; flex-wrap:wrap; gap:8px; }
+  .sitebar nav a { color:var(--ink-soft); text-decoration:none; font-size:15px; padding:5px 12px; border-radius:99px; border:1.5px solid var(--line); background:var(--card); }
+  .sitebar nav a:hover { color:var(--ink); border-color:var(--sky-deep); }
+  .more { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:20px 0 0; }
+  .more a { display:block; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:15px 17px; text-decoration:none; color:var(--ink); }
+  .more a:hover { border-color:var(--sky-deep); }
+  .more b { display:block; font-weight:650; }
+  .more span { display:block; color:var(--ink-soft); font-size:15px; margin-top:3px; }
   footer { margin-top:40px; color:var(--ink-soft); font-size:14px; }
   @media (min-width: 900px) {
     aside.what { float:right; clear:right; width:250px; margin:6px 0 14px 26px; }
@@ -126,6 +137,14 @@
   }
   @media (prefers-reduced-motion: reduce) { details.file summary::before { transition:none; } }
 </style>
+
+<header class="sitebar">
+  <a class="home" href="https://kitecollective.co/"><span class="mark">🪁</span>Kite Collective</a>
+  <nav>
+    <a href="https://kitecollective.co/guides/build-a-website/">Build your first website</a>
+    <a href="https://kitecollective.co/">All guides</a>
+  </nav>
+</header>
 
 <div class="layout">
 <nav class="toc" aria-label="On this page">
@@ -1367,6 +1386,14 @@ If something doesn&#x27;t arrive, tell me what to check. Don&#x27;t change any c
   </table></div>
 </section>
 
+<section id="more">
+  <h2>While you're here</h2>
+  <div class="more">
+    <a href="https://kitecollective.co/guides/build-a-website/"><b>Build your first website with Claude →</b><span>Make a real site from one folder on your laptop, and get a link you can send a customer. No coding.</span></a>
+    <a href="https://kitecollective.co/"><b>Everything else on the site →</b><span>More guides, and what I'm running next.</span></a>
+  </div>
+</section>
+
 <div class="cta">
   <h2>Keep going with the group</h2>
   <p>Scan with your phone camera to join <b>“Practical AI for Your Sales Workflow”</b> on WhatsApp. Get stuck, post a screenshot; that's what it's for. I share what I build there, and workshop dates go out there first.</p>
@@ -1389,7 +1416,7 @@ If something doesn&#x27;t arrive, tell me what to check. Don&#x27;t change any c
   <p style="margin-top:18px">Prefer email? <a href="mailto:hello@kitecollective.co" style="color:var(--kite)">hello@kitecollective.co</a></p>
 </div>
 
-<footer>© Kite Collective · kitecollective.co · The sample business “Meridian Marine Fuels” and all example chats are made up.</footer>
+<footer><a href="https://kitecollective.co/" style="color:var(--ink-soft)">kitecollective.co</a> · © Kite Collective · The sample business “Meridian Marine Fuels” and all example chats are made up.</footer>
 </main>
 </div>
 

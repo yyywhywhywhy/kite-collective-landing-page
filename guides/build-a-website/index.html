@@ -57,7 +57,10 @@ code,.path{font-family:var(--mono);font-size:.86em;background:var(--sky-soft);bo
 .term:hover{color:var(--sky-deep)}
 
 /* nav */
-nav.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+nav.top{display:flex;align-items:center;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;padding-block:22px}
+.sitelinks{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.sitelinks .pill{color:var(--ink-soft);text-decoration:none;font-size:15px;padding:6px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--card)}
+.sitelinks .pill:hover{color:var(--ink);border-color:var(--sky-deep)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:20px}
 .brand small{font-family:var(--body);font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;border-left:1.5px solid var(--line);padding-left:10px;margin-left:2px}
 .btn{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--body);text-decoration:none;border-radius:999px;padding:10px 18px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:transform .2s,background .2s}
@@ -323,7 +326,11 @@ footer a{color:var(--sky-deep);font-weight:600;text-decoration:none}
       <svg width="26" height="30" aria-hidden="true"><use href="#kite"/></svg>
       Kite Collective <small>Cheat sheet</small>
     </a>
-    <a class="btn primary" href="#part-1">Start at step 1</a>
+    <div class="sitelinks">
+      <a class="pill" href="https://kitecollective.co/guides/whatsapp-assistant/">Build a WhatsApp assistant</a>
+      <a class="pill" href="https://kitecollective.co/">All guides</a>
+      <a class="btn primary" href="#part-1">Start at step 1</a>
+    </div>
   </nav>
 
   <header class="hero">

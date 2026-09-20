@@ -82,6 +82,8 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .btn.ghost{background:transparent;color:var(--ink)}
 .btn.kite{background:var(--kite);color:var(--kite-ink);border-color:var(--kite)}
 .navr .btn{padding:8px 16px;font-size:14px}
+.navr .navlink{font:600 14px var(--body);text-decoration:none;color:var(--ink);padding:8px 6px;border-bottom:2px solid transparent}
+.navr .navlink:hover{border-bottom-color:var(--kite)}
 
 /* hero */
 .hero{position:relative;display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;padding-block:clamp(24px,5vw,56px) clamp(40px,6vw,72px)}
@@ -207,6 +209,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
   .contact{grid-template-columns:1fr}
   .cform .row2{grid-template-columns:1fr}
   .navr .btn{display:none}
+  .navr .navlink{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
@@ -229,6 +232,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
         <button id="btn-en" type="button" aria-pressed="true" data-lang="en">EN</button>
         <button id="btn-zh" type="button" aria-pressed="false" data-lang="zh">中文</button>
       </div>
+      <a class="navlink" href="#talks"><span class="en">Talks</span><span class="zh">演讲</span></a>
       <a class="btn primary" href="#contact"><span class="en">Work with me</span><span class="zh">合作咨询</span></a>
     </div>
   </nav>
@@ -393,6 +397,24 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;paddin
           <h3><span class="en">Build your own WhatsApp sales assistant</span><span class="zh">自己搭一个 WhatsApp 销售助手</span></h3>
           <p><span class="en">The step-by-step guide from the “Stop Doing It Manually” webinar. An assistant that sorts your chats so real leads come first, answers the easy questions by itself, and drafts the rest for you to send with one tap. No coding: AI builds it around your business.</span><span class="zh">“别再手动做了”网络研讨会的手把手教程。助手会帮你整理聊天、让真正的客户排在最前，自动回答简单问题，其余的起草好回复，你一键发送。零代码：AI 根据你的生意帮你搭好。</span></p>
           <p style="margin-top:16px"><a class="btn kite" href="/guides/whatsapp-assistant/"><span class="en">Open the guide</span><span class="zh">打开教程</span></a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="talks">
+    <div class="more">
+      <p class="label"><span class="en">Talks</span><span class="zh">演讲</span></p>
+      <div class="svc">
+        <div>
+          <h3><span class="en">AI UGC for e-commerce, with MiniMax</span><span class="zh">用 MiniMax 做电商 AI UGC 视频</span></h3>
+          <p><span class="en">The slides from my talk on making UGC ads with AI: one wine glass, sold to a customer in North America and a mum in Singapore, without a camera, an actor or a location. Includes the four-step workflow and what it costs.</span><span class="zh">我关于用 AI 制作 UGC 广告的演讲幻灯片：同一只酒杯，分别卖给北美的顾客和新加坡的妈妈，不用相机、演员或场地。内含四步工作流与成本。</span></p>
+          <p style="margin-top:16px"><a class="btn kite" href="/talks/ai-ugc-with-minimax/"><span class="en">Open the slides</span><span class="zh">打开幻灯片</span></a></p>
+        </div>
+        <div>
+          <h3><span class="en">Factory to Shelf</span><span class="zh">从工厂到货架</span></h3>
+          <p><span class="en">The slides from my Kimi talk. Photograph a product, and a small AI tool finds what the factory charges and what the same item sells for in shops, with a real listing behind every number.</span><span class="zh">我在 Kimi 活动上的演讲幻灯片。拍一张产品照片，一个小小的 AI 工具就能找出工厂价和同款商品的零售价，每个数字背后都有真实商品链接。</span></p>
+          <p style="margin-top:16px"><a class="btn kite" href="/talks/factory-to-shelf/"><span class="en">Open the slides</span><span class="zh">打开幻灯片</span></a></p>
         </div>
       </div>
     </div>

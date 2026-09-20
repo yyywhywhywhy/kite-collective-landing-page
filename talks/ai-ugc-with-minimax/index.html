@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI UGC with MiniMax · Kite Collective</title>
+  <meta name="description" content="A talk by Qiao of Kite Collective: how to make UGC ads for e-commerce with AI, one product filmed for two different markets without a camera.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30'%3E%3Cpath d='M13 1 25 12 13 23 1 12Z' fill='%23FFC23D' stroke='%230E2A47' stroke-width='1.6'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+  <style>
+    /* Palette and type follow Kite Collective (same tokens as the Factory to Shelf deck) */
+    :root {
+      --ground: #F2F8FD; --sky: #CBE5F8; --sky-soft: #E3F1FB; --sky-deep: #2F7FC1;
+      --ink: #0E2A47; --ink-soft: #4A6380; --line: #CFE0EE; --card: #FFFFFF;
+      --kite: #FFC23D; --bloom: #F59BB0; --good: #1E6E4A; --bad: #B9405F;
+      --display: "Gloock", Georgia, "Times New Roman", serif;
+      --body: "Figtree", -apple-system, system-ui, sans-serif;
+      --mono: "DM Mono", ui-monospace, Menlo, monospace;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* Fixed 1600×900 stage, scaled to whatever screen it's on */
+    .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; background: var(--ground); transform-origin: center; overflow: hidden; }
+    .slide { position: absolute; inset: 0; padding: 80px 110px; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+    .slide.on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+    .kicker { font: 500 20px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--sky-deep); margin: 0 0 22px; }
+    h1, h2, h3 { font-family: var(--display); font-weight: 400; letter-spacing: -.01em; margin: 0; line-height: 1; }
+    h1 { font-size: 120px; }
+    h2 { font-size: 68px; line-height: 1.04; }
+    p { margin: 0; }
+    .lede { font-size: 32px; line-height: 1.4; color: var(--ink-soft); max-width: 1100px; }
+    em { font-style: normal; color: var(--sky-deep); }
+    .hl { position: relative; white-space: nowrap; color: var(--sky-deep); isolation: isolate; }
+    .hl::after { content: ""; position: absolute; left: 0; right: 0; bottom: .06em; height: .16em; background: var(--kite); border-radius: 6px; z-index: -1; }
+    .zh { font-family: var(--body); font-weight: 600; color: var(--ink-soft); letter-spacing: 0; }
+    .card { background: var(--card); border: 2px solid var(--line); border-radius: 28px; padding: 28px 30px; }
+    .src { position: absolute; left: 110px; bottom: 58px; font: 400 15px var(--mono); color: var(--ink-soft); max-width: 1300px; line-height: 1.4; }
+    /* [TK] = a number or asset still to fill in before the talk */
+    .tk { display: inline-block; background: repeating-linear-gradient(-45deg, #FFE3A3 0 10px, #FFD27A 10px 20px); color: var(--ink); border-radius: 10px; padding: 0 .25em; font-style: normal; }
+    .row { display: flex; gap: 28px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .big { display: block; font: 400 84px var(--display); letter-spacing: 0; line-height: 1; }
+    .cap { display: block; font-size: 24px; line-height: 1.35; color: var(--ink-soft); margin-top: 12px; }
+
+    /* Vertical phone video */
+    .vid { position: relative; width: 300px; aspect-ratio: 9 / 16; border-radius: 30px; background: var(--ink); padding: 8px; box-shadow: 0 30px 70px #0E2A4733; flex: none; }
+    .vid video, .vid img, .vid .ph { width: 100%; height: 100%; object-fit: cover; border-radius: 23px; display: block; background: #1a3858; }
+    .vid .tag { position: absolute; left: 50%; bottom: -46px; transform: translateX(-50%); white-space: nowrap; font: 500 17px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+    .ph { display: grid !important; place-items: center; text-align: center; color: #C9DBEC; font: 500 18px/1.5 var(--mono); padding: 24px; position: relative; overflow: hidden; }
+    .ph img { position: absolute; inset: 0; opacity: .35; border-radius: 0 !important; }
+    .ph span { position: relative; }
+    .ph b { display: block; color: var(--kite); font: 400 30px var(--display); margin-bottom: 8px; }
+
+    /* 1 · Intro */
+    .intro { flex-direction: row; gap: 90px; align-items: center; }
+    .portrait { position: relative; width: 500px; flex: none; margin: 0; }
+    .portrait img { width: 500px; height: 660px; object-fit: cover; object-position: 50% 35%; border-radius: 40px 40px 180px 40px; border: 2px solid var(--line); display: block; }
+    .portrait figcaption { position: absolute; left: 22px; bottom: 26px; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 12px 22px; font: 600 22px var(--body); transform: rotate(-3deg); }
+    .facts { list-style: none; padding: 0; margin: 36px 0 0; display: grid; gap: 14px; }
+    .facts li { display: grid; grid-template-columns: 26px 1fr; gap: 14px; font-size: 27px; line-height: 1.35; }
+    .facts li::before { content: ""; width: 14px; height: 14px; margin-top: .45em; transform: rotate(45deg); background: var(--kite); border-radius: 2px; }
+
+    /* Kite Collective one-pager */
+    .kc { padding-top: 70px; }
+    .kc-head { display: flex; justify-content: space-between; align-items: flex-start; }
+    .kc-kite { width: 150px; flex: none; margin: -10px 20px 0 0; transform: rotate(8deg); }
+    .kc-grid { display: grid; grid-template-columns: 1.05fr 1.1fr .95fr; gap: 24px; margin-top: 34px; }
+    .kc-col { background: var(--card); border: 2px solid var(--line); border-radius: 28px; padding: 24px 26px; }
+    .kc-k { font: 500 16px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sky-deep); margin-bottom: 16px; }
+    .kc-swap, .kc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+    .kc-swap li { font-size: 22px; line-height: 1.3; }
+    .kc-swap s { display: block; color: var(--ink-soft); font-size: 18px; text-decoration-color: var(--bad); }
+    .kc-swap span::before { content: "→ "; color: var(--sky-deep); }
+    .kc-list li { font-size: 20px; line-height: 1.35; color: var(--ink-soft); }
+    .kc-list b { display: block; font: 400 25px var(--display); letter-spacing: -.01em; color: var(--ink); }
+    .kc-proof { background: var(--ink); border-color: var(--ink); color: var(--ground); display: grid; gap: 14px; align-content: start; }
+    .kc-proof .kc-k { color: var(--kite); margin-bottom: 2px; }
+    .kc-proof b { display: block; font: 400 34px var(--display); letter-spacing: 0; color: var(--kite); }
+    .kc-proof span { font-size: 19px; line-height: 1.3; color: #C9DBEC; }
+    .kc-foot { margin-top: 24px; font: 500 20px var(--mono); letter-spacing: .04em; color: var(--ink); }
+
+    /* Six markets */
+    .markets { padding-top: 64px; }
+    .mk-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 30px; }
+    .mk-row figure { margin: 0; }
+    .mk-row img { width: 100%; aspect-ratio: 752 / 1344; object-fit: cover; border-radius: 22px; border: 2px solid var(--line); display: block; background: var(--sky-soft); }
+    .mk-row figcaption { margin-top: 10px; font: 500 16px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); text-align: center; }
+    .mk-foot { margin-top: 22px; font-size: 26px; color: var(--ink-soft); }
+    .mk-foot b { color: var(--ink); }
+
+    /* Meet MiniMax */
+    .mm-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 24px; margin-top: 38px; }
+    .mm-grid h3 { font-size: 34px; letter-spacing: -.02em; margin-bottom: 18px; line-height: 1.1; }
+    .mm-grid ul { margin: 0; padding-left: 24px; display: grid; gap: 10px; font-size: 24px; line-height: 1.35; color: var(--ink-soft); }
+    .mm-grid li::marker { color: var(--kite); }
+    .mm-main { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+    .mm-main .kc-k { color: var(--kite); }
+    .mm-main ul { color: #C9DBEC; }
+
+    /* Section divider */
+    .part { justify-content: center; background: var(--sky); }
+    .part .num { font: 400 220px var(--display); color: var(--card); position: absolute; right: 110px; bottom: 40px; line-height: 1; letter-spacing: -.05em; }
+
+    /* Compare (polished ad vs UGC) */
+    .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 44px; }
+    .vs .card h3 { font-size: 36px; margin-bottom: 18px; }
+    .vs ul { margin: 0; padding-left: 28px; display: grid; gap: 10px; font-size: 26px; line-height: 1.35; color: var(--ink-soft); }
+    .vs .win { border-color: var(--sky-deep); background: var(--sky-soft); }
+
+    /* Friction timeline */
+    .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-top: 40px; }
+    .steps div { background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 16px 16px 18px; font-size: 21px; line-height: 1.3; }
+    .steps b { display: block; font: 500 15px var(--mono); letter-spacing: .1em; color: var(--sky-deep); margin-bottom: 6px; }
+
+    /* Talking head vs scenes */
+    .th .card { position: relative; }
+    .th .card h3 { font-size: 42px; margin: 6px 0 14px; }
+    .th .card p { font-size: 26px; line-height: 1.4; color: var(--ink-soft); }
+    .th .verdict { font: 500 17px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .th .no { color: var(--bad); } .th .yes { color: var(--good); }
+    .th .card.yes-card { border-color: var(--good); }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .chips span { background: var(--ground); border: 2px solid var(--line); border-radius: 99px; padding: 8px 16px; font-size: 20px; }
+
+    /* Workflow */
+    .wf { flex-direction: row; gap: 70px; align-items: center; }
+    .wf-left { flex: 1; }
+    .stepno { display: inline-flex; align-items: center; gap: 14px; font: 500 20px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sky-deep); margin-bottom: 20px; }
+    .stepno b { width: 52px; height: 52px; border-radius: 50%; background: var(--kite); color: var(--ink); display: grid; place-items: center; font: 400 26px var(--display); letter-spacing: 0; }
+    .wf .lede { margin-top: 22px; font-size: 28px; }
+    .tips { margin: 26px 0 0; padding-left: 28px; display: grid; gap: 10px; font-size: 25px; line-height: 1.35; color: var(--ink-soft); }
+    .tips li::marker { color: var(--kite); }
+    .strip { display: flex; gap: 14px; }
+    .strip figure { margin: 0; width: 190px; }
+    .strip img { width: 190px; height: 338px; object-fit: cover; border-radius: 18px; border: 2px solid var(--line); display: block; }
+    .strip figcaption { font: 500 16px var(--mono); color: var(--ink-soft); margin-top: 8px; letter-spacing: .04em; }
+    .strip figcaption b { color: var(--ink); }
+
+    .beats { width: 720px; flex: none; border-collapse: separate; border-spacing: 0 10px; font-size: 22px; }
+    .beats td { background: var(--card); padding: 14px 18px; vertical-align: top; line-height: 1.35; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); }
+    .beats td:first-child { border-left: 2px solid var(--line); border-radius: 18px 0 0 18px; font: 500 18px var(--mono); color: var(--sky-deep); white-space: nowrap; }
+    .beats td:last-child { border-right: 2px solid var(--line); border-radius: 0 18px 18px 0; }
+    .beats td b { display: block; font-family: var(--display); font-weight: 400; font-size: 24px; margin-bottom: 2px; }
+
+    .refs { display: flex; gap: 12px; align-items: center; flex: none; }
+    .refs figure { margin: 0; text-align: center; }
+    .refs img { width: 200px; height: 356px; object-fit: cover; border-radius: 22px; border: 2px solid var(--line); display: block; background: #fff; }
+    .refs img.contain { object-fit: contain; }
+    .refs figcaption { font: 500 16px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin-top: 10px; }
+    .refs .plus { font: 400 44px var(--display); color: var(--sky-deep); }
+
+    .prompt { margin-top: 24px; background: var(--ink); color: #DCE9F5; border-radius: 22px; padding: 22px 26px; font: 400 18px/1.55 var(--mono); max-width: 760px; }
+    .prompt b { color: var(--kite); font-weight: 500; }
+    .clips { display: flex; gap: 10px; align-items: flex-end; flex: none; }
+    .clips .vid { width: 158px; border-radius: 20px; padding: 5px; }
+    .clips .vid video { border-radius: 16px; }
+    .clips .vid .tag { font-size: 14px; bottom: -34px; }
+
+    /* Two customers */
+    .two { flex-direction: row; gap: 80px; align-items: center; }
+    .two .pair { display: flex; gap: 50px; flex: none; }
+    .two .vid { width: 330px; }
+    .two .vid .tag { bottom: -48px; font-size: 18px; color: var(--ink); }
+    .swap { margin-top: 30px; border-collapse: separate; border-spacing: 0; font-size: 22px; width: 100%; }
+    .swap th { font: 500 15px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sky-deep); text-align: left; padding: 0 14px 10px; }
+    .swap td { padding: 12px 14px; border-top: 2px solid var(--line); line-height: 1.3; }
+    .swap td:first-child { font: 500 17px var(--mono); color: var(--ink-soft); white-space: nowrap; }
+
+    /* Numbers */
+    .ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 40px; }
+    .ledger .card h3 { font-size: 30px; margin-bottom: 20px; }
+    .ledger dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 14px 20px; font-size: 26px; align-items: baseline; }
+    .ledger dt { color: var(--ink-soft); }
+    .ledger dd { margin: 0; font: 400 40px var(--display); letter-spacing: -.02em; text-align: right; }
+    .ledger .mine { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+    .ledger .mine dt { color: #C9DBEC; }
+    .ledger .mine h3 { color: var(--kite); }
+
+    .funnel { display: grid; grid-template-columns: 1fr 70px 1fr 70px 1fr 70px 1fr; align-items: center; margin-top: 48px; }
+    .funnel .card { text-align: center; padding: 26px 20px; }
+    .funnel .arrow { text-align: center; font-size: 44px; color: var(--sky-deep); }
+    .funnel .big { font-size: 72px; }
+    .then-now { margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .then-now .card { font-size: 28px; line-height: 1.4; }
+    .then-now .card b { display: block; font: 500 17px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; }
+    .then-now .now { border-color: var(--sky-deep); background: var(--sky-soft); }
+
+    /* Ethics */
+    .ethics .card h3 { font-size: 34px; margin: 8px 0 16px; }
+    .ethics ul { margin: 0; padding-left: 26px; display: grid; gap: 10px; font-size: 25px; line-height: 1.35; color: var(--ink-soft); }
+    .ethics .bad { border-color: var(--bad); }
+    .ethics .ok { border-color: var(--good); }
+
+    /* Close */
+    .close { justify-content: center; background: var(--ink); color: var(--ground); }
+    .close .kicker { color: var(--kite); }
+    .close .sub { margin-top: 30px; font-size: 34px; color: #C9DBEC; max-width: 950px; line-height: 1.35; }
+    .close .crow { display: flex; align-items: center; gap: 30px; margin-top: 50px; align-self: flex-start; }
+    .close .cta { display: inline-flex; font: 700 32px var(--body); background: var(--kite); color: var(--ink); border-radius: 999px; padding: 20px 34px; }
+    .close .contact { display: flex; flex-direction: column; gap: 6px; font: 500 21px var(--mono); color: #C9DBEC; letter-spacing: .03em; }
+    .close .qr { position: absolute; right: 110px; bottom: 56px; width: 300px; background: #fff; border-radius: 28px; padding: 22px 22px 16px; text-align: center; color: var(--ink); box-shadow: 0 24px 60px #00000055; }
+    .close .qr img { width: 256px; height: 256px; display: block; margin: 0 auto; image-rendering: pixelated; }
+    .close .qr span { display: block; margin-top: 10px; font: 600 20px var(--body); }
+    .kite-logo { position: absolute; left: 110px; bottom: 60px; display: inline-flex; align-items: center; gap: 14px; font: 400 26px var(--display); color: var(--ground); }
+    .kite-logo svg { width: 30px; height: 36px; }
+
+    /* Chrome */
+    .progress { position: absolute; left: 0; bottom: 0; height: 6px; background: var(--kite); transition: width .35s ease; }
+    .count { position: absolute; right: 30px; bottom: 22px; font: 400 18px var(--mono); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+    .brandmark { position: absolute; left: 110px; bottom: 24px; display: flex; align-items: center; gap: 12px; font: 500 17px var(--mono); color: var(--ink-soft); letter-spacing: .12em; }
+    .brandmark i { width: 13px; height: 13px; background: var(--kite); border: 1.5px solid var(--ink); border-radius: 2px; transform: rotate(45deg); }
+    .help { position: fixed; left: 12px; bottom: 10px; font: 12px var(--mono); color: #7e93aa; }
+    body.clean .tk { background: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+
+    <!-- ============ 1 · INTRODUCTION ============ -->
+
+    <!-- 1 · Hi -->
+    <section class="slide intro">
+      <figure class="portrait">
+        <img src="assets/qiao.jpg" alt="Qiao">
+        <figcaption>Founder, Kite Collective</figcaption>
+      </figure>
+      <div>
+        <p class="kicker">AI educator · Singapore</p>
+        <h1>Hi, I'm <span class="hl">Qiao.</span></h1>
+        <p class="lede" style="margin-top:24px;max-width:820px">I started by using AI in my own small business. Now I help e-commerce owners automate their work with AI.</p>
+        <ul class="facts">
+          <li><span><b>200+ business owners</b> have tested what I teach</span></li>
+          <li><span>Bilingual AI tutorials on RedNote, Bilibili, YouTube and Instagram</span></li>
+          <li><span>I use <b>MiniMax</b> to make product videos for e-commerce</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Kite Collective one-pager -->
+    <section class="slide kc">
+      <div class="kc-head">
+        <div>
+          <p class="kicker">About Kite Collective</p>
+          <h2>Practical AI for <span class="hl">e-commerce owners.</span></h2>
+          <p class="lede" style="margin-top:20px;max-width:980px">I'm an AI educator. I help online sellers automate the work that used to need a whole team.</p>
+        </div>
+        <svg class="kc-kite" viewBox="-60 -80 120 190" aria-hidden="true">
+          <path d="M0 -62 40 -14 0 0Z" fill="#FFC23D"/><path d="M0 -62 -40 -14 0 0Z" fill="#FFD97A"/>
+          <path d="M-40 -14 0 0 0 62Z" fill="#FFFFFF"/><path d="M40 -14 0 0 0 62Z" fill="#F59BB0"/>
+          <path d="M0 -62 40 -14 0 62 -40 -14Z" fill="none" stroke="#0E2A47" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M0 62c-8 10 8 16 0 26s8 14 0 20" stroke="#0E2A47" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="kc-grid">
+        <div class="kc-col">
+          <p class="kc-k">What AI takes off your plate</p>
+          <ul class="kc-swap">
+            <li><s>Photo shoot</s><span>AI product photos &amp; videos</span></li>
+            <li><s>Copywriter</s><span>Listings &amp; a month of content</span></li>
+            <li><s>Replying at midnight</s><span>AI customer service</span></li>
+            <li><s>Manual busywork</s><span>Automated store operations</span></li>
+          </ul>
+        </div>
+        <div class="kc-col">
+          <p class="kc-k">How I help</p>
+          <ul class="kc-list">
+            <li><b>AI for E-commerce</b>Online course for Shopify, Shopee &amp; TikTok Shop sellers</li>
+            <li><b>Workshops &amp; team training</b>Hands-on, built around your real tasks</li>
+            <li><b>1:1 AI Growth Sprint</b>A few weeks, ending with AI running in your business</li>
+          </ul>
+        </div>
+        <div class="kc-col kc-proof">
+          <p class="kc-k">Why me</p>
+          <div><b>200+</b><span>business owners have tested what I teach</span></div>
+          <div><b>4 platforms</b><span>AI tutorials on RedNote, Bilibili, YouTube &amp; Instagram</span></div>
+          <div><b>On stage</b><span>AI panels with ByteDance &amp; Google Cloud</span></div>
+        </div>
+      </div>
+      <p class="kc-foot">kitecollective.co &nbsp;·&nbsp; hello@kitecollective.co</p>
+    </section>
+
+    <!-- 2 · The promise: show the finished video first -->
+    <section class="slide two" data-video>
+      <div style="flex:1">
+        <p class="kicker">Today, in one slide</p>
+        <h2>One wine glass. <span class="hl">Two customers.</span> Zero filming.</h2>
+        <p class="lede" style="margin-top:28px">Same product, two very different buyers: a North American home, and a Singapore home with a local mum. Neither was filmed. I'll show you exactly how I made them, and what it cost.</p>
+      </div>
+      <div class="pair">
+        <div class="vid"><video src="assets/v1-us.mp4" poster="assets/v1-us-poster.jpg" muted playsinline loop preload="auto"></video><span class="tag">North America</span></div>
+        <div class="vid" id="sgSlotA"><div class="ph"><img src="assets/hdb-ref.jpg" alt=""><span><b>SG mum · Singapore</b>Video coming.<br>Drop it in as<br>assets/v2-sg.mp4</span></div><span class="tag">Singapore</span></div>
+      </div>
+    </section>
+
+    <!-- ============ 2 · WHY UGC ============ -->
+
+    <!-- 3 · Why UGC -->
+    <section class="slide">
+      <p class="kicker">Why UGC video matters</p>
+      <h2>People scroll past ads. They <span class="hl">stop for people.</span></h2>
+      <div class="vs">
+        <div class="card">
+          <h3>Traditional commercial</h3>
+          <ul><li>Studio lighting, perfect actors</li><li>Feels like it's selling to you</li><li>Only 16% of consumers say branded content feels authentic</li></ul>
+        </div>
+        <div class="card win">
+          <h3>UGC video</h3>
+          <ul><li>Filmed on a phone, in a real-looking home</li><li>Feels like a friend's recommendation</li><li>60% say UGC is the most authentic content they see</li></ul>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:36px;color:var(--ink)">On TikTok and Reels, the ads that work don't look like ads.</p>
+      <p class="src">Survey figures as reported by Influee, "UGC statistics" (2026). Industry estimates; verify before quoting.</p>
+    </section>
+
+    <!-- 4 · The cost of real UGC -->
+    <section class="slide">
+      <p class="kicker">The problem with real UGC</p>
+      <h2>Real creators are <span class="hl">slow and expensive.</span></h2>
+      <div class="grid3" style="margin-top:40px">
+        <div class="card"><span class="big">US$150+</span><span class="cap">per video from a new creator. Established ones charge $400–800.</span></div>
+        <div class="card"><span class="big">4–8 wks</span><span class="cap">from outreach to first post on a product-gifting campaign</span></div>
+        <div class="card"><span class="big">+30–100%</span><span class="cap">extra per month to run the video as an ad from their account</span></div>
+      </div>
+      <div class="steps">
+        <div><b>01</b>Find creators</div>
+        <div><b>02</b>Negotiate rates &amp; rights</div>
+        <div><b>03</b>Ship the product</div>
+        <div><b>04</b>Wait for them to film</div>
+        <div><b>05</b>Revisions, back and forth</div>
+        <div><b>06</b>Some never post</div>
+      </div>
+      <p class="src">Rates: Influee and Creator Blitz, UGC rate guides (2026). Timeline: Influee, influencer gifting guide. Industry estimates; verify before quoting.</p>
+    </section>
+
+    <!-- 5 · The alternative -->
+    <section class="slide two" data-video>
+      <div style="flex:1">
+        <p class="kicker">The alternative</p>
+        <h2>What if the creator, the home and the shoot were <span class="hl">all generated?</span></h2>
+        <p class="lede" style="margin-top:28px">No shipping. No scheduling. No reshoot fees. Just a product photo, a good reference video, and an AI video model.</p>
+        <p class="lede" style="margin-top:22px;color:var(--ink)">This one cost me <b>less than US$8</b>.</p>
+      </div>
+      <div class="vid" style="width:360px"><video src="assets/v1-us.mp4" poster="assets/v1-us-poster.jpg" muted playsinline loop preload="auto"></video><span class="tag">AI-generated · no filming</span></div>
+    </section>
+
+    <!-- Meet MiniMax -->
+    <section class="slide mm">
+      <p class="kicker">The tool</p>
+      <h2>Meet <span class="hl">MiniMax.</span></h2>
+      <p class="lede" style="margin-top:18px">The video, the voice and the music of a UGC ad, from one AI company.</p>
+      <div class="mm-grid">
+        <div class="card mm-main">
+          <p class="kc-k">Video · MiniMax H3</p>
+          <h3>Up to 15 seconds, 2K, vertical</h3>
+          <ul>
+            <li>Several shots in one generation</li>
+            <li>Native stereo sound with every clip</li>
+            <li>Guide it with your images, video and audio</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="kc-k">Voice · MiniMax Speech</p>
+          <h3>Voiceover in 40+ languages</h3>
+          <ul>
+            <li>300+ ready-made voices</li>
+            <li>Localise one ad for every market</li>
+            <li>Voice cloning, with consent</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="kc-k">Music · MiniMax Music</p>
+          <h3>An original music bed</h3>
+          <ul>
+            <li>Generated to fit your video</li>
+            <li>A different mood for each customer</li>
+          </ul>
+        </div>
+      </div>
+      <p class="src">MiniMax H3 released 31 Jul 2026 (MarkTechPost; Hugging Face explainer). Speech: MiniMax API docs. Check current specs before the talk.</p>
+    </section>
+
+    <!-- ============ 3 · SOURCING & STRATEGY ============ -->
+
+    <!-- 6 · Find inspiration -->
+    <section class="slide">
+      <p class="kicker">Sourcing</p>
+      <h2>Don't invent. <span class="hl">Copy what already works.</span></h2>
+      <div class="grid2" style="margin-top:44px">
+        <div class="card">
+          <h3 style="font-size:38px;margin-bottom:14px">Meta Ad Library</h3>
+          <p class="lede" style="font-size:26px">Search your product category. Ads that have been running for weeks are the ones making money. Nobody keeps paying for a losing ad.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:38px;margin-bottom:14px">TikTok</h3>
+          <p class="lede" style="font-size:26px">Scroll your niche, e.g. "Amazon finds". Look for the <b>format</b> that keeps getting views: the unboxing, the reveal, the hook in the first second.</p>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:38px;color:var(--ink)">Copy the <b>structure, pacing and shots</b>. Never re-upload someone else's footage.</p>
+    </section>
+
+    <!-- 7 · AI's strength -->
+    <section class="slide th">
+      <p class="kicker">The most important tip</p>
+      <h2>AI's strength: <span class="hl">scenes and product in use.</span></h2>
+      <p class="lede" style="margin-top:22px">Build your video around what AI does best: your product in a real-looking place, in real hands, doing what it does.</p>
+      <div class="grid3" style="margin-top:40px">
+        <div class="card">
+          <span class="verdict yes">01 · Any scene</span>
+          <h3>Any home</h3>
+          <p>A US suburban living room, a Singapore flat, a kitchen, an office. No location needed.</p>
+        </div>
+        <div class="card yes-card">
+          <span class="verdict yes">02 · Product in use</span>
+          <h3>Show what it does</h3>
+          <div class="chips"><span>unboxing</span><span>the reveal</span><span>light through the glass</span><span>the first sip</span></div>
+        </div>
+        <div class="card">
+          <span class="verdict yes">03 · Any customer</span>
+          <h3>Any buyer</h3>
+          <p>Change age, style and home to match each market you sell to.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4 · WORKFLOW ============ -->
+
+    <!-- 8 · Step 1 -->
+    <section class="slide wf">
+      <div class="wf-left">
+        <div class="stepno"><b>1</b>Find a winning video</div>
+        <h2>Start from a <span class="hl">proven winner.</span></h2>
+        <p class="lede">I found this "Amazon finds" glassware video on TikTok. A simple four-beat structure, and not one word spoken.</p>
+        <ul class="tips">
+          <li>Same product type as yours (glassware → wine glasses)</li>
+          <li>A clear structure you can see in the stills</li>
+          <li>The product in use is the star</li>
+        </ul>
+      </div>
+      <div class="strip">
+        <figure><img src="assets/tiktok-1.jpg" alt=""><figcaption><b>Box</b> · hook</figcaption></figure>
+        <figure><img src="assets/tiktok-2.jpg" alt=""><figcaption><b>Unbox</b></figcaption></figure>
+        <figure><img src="assets/tiktok-3.jpg" alt=""><figcaption><b>Hero</b></figcaption></figure>
+        <figure><img src="assets/tiktok-4.jpg" alt=""><figcaption><b>Payoff</b></figcaption></figure>
+      </div>
+    </section>
+
+    <!-- 9 · Step 2 -->
+    <section class="slide wf">
+      <div class="wf-left">
+        <div class="stepno"><b>2</b>Break it down with Claude</div>
+        <h2>Second by second, <span class="hl">what happens.</span></h2>
+        <p class="lede">Download the video, give it to Claude, and ask for a timestamped breakdown: every cut, every shot, the camera angle, the light.</p>
+        <p class="lede" style="margin-top:18px;color:var(--ink)">Then ask it to rewrite each beat for <b>your</b> product.</p>
+      </div>
+      <table class="beats">
+        <tr><td>0–6s</td><td><b>The closed box</b>Held still for two seconds. Hands lift the lid. This is the hook.</td></tr>
+        <tr><td>6–10s</td><td><b>The reveal</b>Glasses in a row on the table. A hand turns one into the light.</td></tr>
+        <tr><td>10–14s</td><td><b>The hero</b>One glass lifted to the window. Light shines through the colours.</td></tr>
+        <tr><td>14–19s</td><td><b>The payoff</b>Pull back to the person. She raises the glass, sips, smiles.</td></tr>
+      </table>
+    </section>
+
+    <!-- 10 · Step 3 -->
+    <section class="slide wf">
+      <div class="wf-left">
+        <div class="stepno"><b>3</b>Create the character &amp; scene</div>
+        <h2>Generate the person. <span class="hl">Bring in your product.</span></h2>
+        <p class="lede">Use GPT (or any image model) to make a still of your customer and your product in their home. This locks the look before you spend on video.</p>
+        <ul class="tips">
+          <li>Start from your real product photo</li>
+          <li>Describe the customer in detail: age, hair, clothes, jewellery</li>
+          <li>Pick the still where the product looks most like itself</li>
+        </ul>
+      </div>
+      <div class="refs">
+        <figure><img class="contain" src="assets/product.jpg" alt=""><figcaption>Product photo</figcaption></figure>
+        <span class="plus">+</span>
+        <figure><img src="assets/character-us.jpg" alt=""><figcaption>Character</figcaption></figure>
+        <span class="plus">→</span>
+        <figure><img src="assets/hero-still.jpg" alt=""><figcaption>Scene still</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- 11 · Step 4 -->
+    <section class="slide wf" data-video>
+      <div class="wf-left">
+        <div class="stepno"><b>4</b>Generate the video</div>
+        <h2>One prompt per beat. <span class="hl">Then stitch.</span></h2>
+        <p class="lede">Feed Claude's description of each beat, plus your images, into MiniMax H3. Here each beat is its own clip, joined in Higgsfield. H3 can also hold several shots in one 15-second generation.</p>
+        <div class="prompt"><b>BEAT 3 · the hero, 4s.</b> Genuine UGC phone footage, natural daylight from a large window. One hand lifts a single stained-glass wine goblet into the centre of the frame and turns it toward the window so daylight burns through the painted panels… <b>No captions, no text, no logos.</b></div>
+      </div>
+      <div class="clips">
+        <div class="vid"><video src="assets/clip-1.mp4" muted playsinline loop preload="auto"></video><span class="tag">1 · box</span></div>
+        <div class="vid"><video src="assets/clip-2.mp4" muted playsinline loop preload="auto"></video><span class="tag">2 · reveal</span></div>
+        <div class="vid"><video src="assets/clip-3.mp4" muted playsinline loop preload="auto"></video><span class="tag">3 · hero</span></div>
+        <div class="vid"><video src="assets/clip-4.mp4" muted playsinline loop preload="auto"></video><span class="tag">4 · payoff</span></div>
+      </div>
+    </section>
+
+    <!-- 12 · Two customers, side by side -->
+    <section class="slide two" data-video>
+      <div style="flex:1">
+        <p class="kicker">Same product · different customer</p>
+        <h2>Change the world <span class="hl">around the product.</span></h2>
+        <table class="swap">
+          <tr><th></th><th>North America</th><th>Singapore</th></tr>
+          <tr><td>Customer</td><td>Woman in her 20s</td><td>Singaporean mum</td></tr>
+          <tr><td>Home</td><td>Suburban living room</td><td>Singapore flat, sheer curtains</td></tr>
+          <tr><td>Styling</td><td>Tulips, red nails, silver jewellery</td><td>Simple tee, natural hands</td></tr>
+          <tr><td>Feel</td><td>Glam, aspirational</td><td>Relaxed, everyday</td></tr>
+        </table>
+        <p class="lede" style="margin-top:26px;font-size:28px;color:var(--ink)">Same four beats. Same prompts, with the customer and the home swapped. Add a local voiceover with MiniMax Speech.</p>
+      </div>
+      <div class="pair" style="gap:40px">
+        <div class="vid" style="width:290px"><video src="assets/v1-us.mp4" poster="assets/v1-us-poster.jpg" muted playsinline loop preload="auto"></video><span class="tag">North America</span></div>
+        <div class="vid" style="width:290px" id="sgSlotB"><div class="ph"><img src="assets/hdb-ref.jpg" alt=""><span><b>SG mum · Singapore</b>assets/v2-sg.mp4</span></div><span class="tag">Singapore</span></div>
+      </div>
+    </section>
+
+    <!-- Six markets: customer stills of the same glass -->
+    <section class="slide markets">
+      <p class="kicker">Go further · same product, six markets</p>
+      <h2>One glass. <span class="hl">Six customers.</span></h2>
+      <div class="mk-row">
+        <figure><img src="assets/markets/middle-east.jpg" alt=""><figcaption>Middle East</figcaption></figure>
+        <figure><img src="assets/markets/east-asia.jpg" alt=""><figcaption>East Asia</figcaption></figure>
+        <figure><img src="assets/markets/india.jpg" alt=""><figcaption>India</figcaption></figure>
+        <figure><img src="assets/markets/west-africa.jpg" alt=""><figcaption>West Africa</figcaption></figure>
+        <figure><img src="assets/markets/latin-america.jpg" alt=""><figcaption>Latin America</figcaption></figure>
+        <figure><img src="assets/markets/france.jpg" alt=""><figcaption>France</figcaption></figure>
+      </div>
+      <p class="mk-foot">Each one is a starting frame for MiniMax H3 to turn into a video.</p>
+    </section>
+
+    <!-- 13 · What it cost me -->
+    <section class="slide">
+      <p class="kicker">The honest numbers</p>
+      <h2>What these <span class="hl">actually cost me.</span></h2>
+      <div class="ledger">
+        <div class="card">
+          <h3>Hiring 2 UGC creators</h3>
+          <dl>
+            <dt>Creator fees (2 videos)</dt><dd>US$300–1,600</dd>
+            <dt>Product shipped to each</dt><dd>+ product + postage</dd>
+            <dt>Time to first video</dt><dd>weeks</dd>
+            <dt>A creator in Singapore, one in the US</dt><dd>two searches</dd>
+          </dl>
+        </div>
+        <div class="card mine">
+          <h3>What I spent with AI</h3>
+          <dl>
+            <dt>Per video</dt><dd>under US$8</dd>
+            <dt>Next version</dt><dd>reuse the workflow</dd>
+            <dt>Locations visited</dt><dd>0</dd>
+          </dl>
+        </div>
+      </div>
+      <p class="src">Creator fees: industry rate guides (2026), US$150–800 per video. My numbers: measured from my own account.</p>
+    </section>
+
+    <!-- ============ 5 · THE NUMBERS GAME ============ -->
+
+    <!-- 14 · Numbers game -->
+    <section class="slide">
+      <p class="kicker">Strategy</p>
+      <h2>AI doesn't guarantee a viral video. <span class="hl">It's a numbers game.</span></h2>
+      <div class="then-now">
+        <div class="card"><b>Before</b>One viral hit meant briefing about <strong>20 creators</strong>, shipping 20 products, and waiting weeks.</div>
+        <div class="card now"><b>Now</b>Swap the customer, the home, the hook. Generate variations on a laptop, or several machines at once.</div>
+      </div>
+      <div class="funnel">
+        <div class="card"><span class="big">Batch</span><span class="cap">run the same workflow for many versions</span></div>
+        <div class="arrow">→</div>
+        <div class="card"><span class="big">Post</span><span class="cap">all of them, small budget each</span></div>
+        <div class="arrow">→</div>
+        <div class="card"><span class="big">Watch</span><span class="cap">which hooks and customers get views</span></div>
+        <div class="arrow">→</div>
+        <div class="card" style="border-color:var(--sky-deep)"><span class="big">Scale</span><span class="cap">make more of the winner</span></div>
+      </div>
+    </section>
+
+    <!-- ============ 6 · ETHICS ============ -->
+
+    <!-- 15 · Ethics -->
+    <section class="slide ethics">
+      <p class="kicker">Ethics &amp; best practice</p>
+      <h2>AI is synthetic. <span class="hl">Don't fake the result.</span></h2>
+      <div class="grid2" style="margin-top:40px">
+        <div class="card bad">
+          <span class="th"><span class="verdict no" style="font:500 17px var(--mono);letter-spacing:.12em;color:var(--bad)">✕ Never</span></span>
+          <h3>Fake efficacy</h3>
+          <ul>
+            <li>Generated "after" results for skincare or supplements</li>
+            <li>A made-up customer claiming it changed their life</li>
+            <li>One backlash can destroy the trust your brand built</li>
+          </ul>
+        </div>
+        <div class="card ok">
+          <span class="verdict" style="font:500 17px var(--mono);letter-spacing:.12em;color:var(--good)">✓ Fair game</span>
+          <h3>Show what's real</h3>
+          <ul>
+            <li>How it looks, styled in a home (glasses, décor, fashion)</li>
+            <li>What the product really does</li>
+            <li>Follow each platform's rules for labelling AI-generated content</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:34px;color:var(--ink)">The wine glass really looks like that. That's why it's fair to show it.</p>
+    </section>
+
+    <!-- 16 · Close -->
+    <section class="slide close">
+      <p class="kicker">Free webinar</p>
+      <h1 style="font-size:112px;line-height:1">Stop Doing It Manually.</h1>
+      <h2 style="font-size:84px;line-height:1.05;margin-top:16px;color:var(--kite)">Practical AI for Your Sales Workflow</h2>
+      <p class="sub">Five small things AI can do in your daily work, and how to set them up yourself.</p>
+      <div class="crow">
+        <span class="cta">Scan to join the group →</span>
+        <span class="contact"><span>hello@kitecollective.co</span><span>kitecollective.co</span></span>
+      </div>
+      <div class="qr">
+        <img src="assets/whatsapp-qr.png" alt="WhatsApp group QR code">
+        <span>AI for your sales workflow</span>
+      </div>
+      <div class="kite-logo">
+        <svg viewBox="0 0 26 30" aria-hidden="true"><path d="M13 1 25 12 13 23 1 12Z" fill="#FFC23D" stroke="#F2F8FD" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 1v22M1 12h24" stroke="#F2F8FD" stroke-width="1.2"/><path d="M13 23c-2 2 2 3 0 6" stroke="#F2F8FD" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        Kite Collective
+      </div>
+    </section>
+
+    <div class="brandmark" id="brandmark"><i></i>KITE COLLECTIVE · AI UGC WITH MINIMAX</div>
+    <div class="count" id="count"></div>
+    <div class="progress" id="progress"></div>
+  </div>
+  <div class="help" id="help">← → to move · F for full screen · R to replay the videos</div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    const stage = $('#stage');
+    function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `translate(-50%, -50%) scale(${s})`; }
+    addEventListener('resize', fit);
+    addEventListener('load', fit);
+    document.addEventListener('fullscreenchange', fit);
+    new ResizeObserver(fit).observe(document.documentElement);
+    fit();
+
+    // The SG video swaps in by itself once assets/v2-sg.mp4 exists.
+    const probe = document.createElement('video');
+    probe.preload = 'metadata';
+    probe.onloadedmetadata = () => {
+      ['#sgSlotA', '#sgSlotB'].forEach((id) => {
+        const slot = $(id);
+        const tag = slot.querySelector('.tag').outerHTML;
+        slot.innerHTML = `<video src="assets/v2-sg.mp4" muted playsinline loop preload="auto"></video>${tag}`;
+      });
+      go(idx);
+    };
+    probe.src = 'assets/v2-sg.mp4';
+
+    const slides = [...document.querySelectorAll('.slide')];
+    let idx = Math.min(slides.length - 1, Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+    function go(n, restart) {
+      idx = Math.min(slides.length - 1, Math.max(0, n));
+      slides.forEach((s, k) => {
+        s.classList.toggle('on', k === idx);
+        s.querySelectorAll('video').forEach((v) => {
+          if (k === idx) { if (restart) v.currentTime = 0; v.play().catch(() => {}); }
+          else { v.pause(); v.currentTime = 0; }
+        });
+      });
+      history.replaceState(null, '', location.pathname + location.search + '#' + (idx + 1));
+      $('#count').textContent = `${idx + 1} / ${slides.length}`;
+      $('#progress').style.width = `${((idx + 1) / slides.length) * 100}%`;
+      $('#brandmark').hidden = slides[idx].classList.contains('close');
+    }
+    addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(idx + 1); }
+      else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(idx - 1); }
+      else if (e.key === 'Home') go(0);
+      else if (e.key === 'End') go(slides.length - 1);
+      else if (e.key === 'r' || e.key === 'R') go(idx, true);
+      else if (e.key === 'f' || e.key === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+    });
+    addEventListener('fullscreenchange', () => { $('#help').hidden = !!document.fullscreenElement; });
+    go(idx);
+  </script>
+</body>
+</html>

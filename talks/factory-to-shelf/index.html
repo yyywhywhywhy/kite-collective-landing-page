@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Factory to Shelf · Kite Collective</title>
+  <meta name="description" content="A talk by Qiao of Kite Collective: photograph a product, and AI finds the factory price and the shop price, with a real listing behind every number.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30'%3E%3Cpath d='M13 1 25 12 13 23 1 12Z' fill='%23FFC23D' stroke='%230E2A47' stroke-width='1.6'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+  <style>
+    /* Palette and type follow Kite Collective */
+    :root {
+      --ground: #F2F8FD; --sky: #CBE5F8; --sky-soft: #E3F1FB; --sky-deep: #2F7FC1;
+      --ink: #0E2A47; --ink-soft: #4A6380; --line: #CFE0EE; --card: #FFFFFF;
+      --kite: #FFC23D; --bloom: #F59BB0;
+      --bar-factory: #2F7FC1; --bar-cn: #7FB8E6; --bar-sg: #FFC23D; --bar-us: #F59BB0;
+      --t-factory: #2F7FC1; --t-cn: #2F6F9F; --t-sg: #9A6A00; --t-us: #B9405F;
+      --good: #1E6E4A;
+      --display: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+      --body: "Instrument Sans", -apple-system, system-ui, sans-serif;
+      --mono: "DM Mono", ui-monospace, Menlo, monospace;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* Fixed 1600×900 stage, scaled to whatever screen it's on */
+    .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; background: var(--ground); transform-origin: center; overflow: hidden; }
+    .slide { position: absolute; inset: 0; padding: 90px 110px; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+    .slide.on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+    .kicker { font: 500 20px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--sky-deep); margin: 0 0 22px; }
+    h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; margin: 0; line-height: 1; }
+    h1 { font-size: 132px; }
+    h2 { font-size: 72px; }
+    p { margin: 0; }
+    .lede { font-size: 34px; line-height: 1.4; color: var(--ink-soft); max-width: 1100px; }
+    .muted { color: var(--ink-soft); }
+    em { font-style: normal; color: var(--sky-deep); }
+    .hl { position: relative; white-space: nowrap; color: var(--sky-deep); isolation: isolate; }
+    .hl::after { content: ""; position: absolute; left: 0; right: 0; bottom: .06em; height: .16em; background: var(--kite); border-radius: 6px; z-index: -1; }
+    .kite-logo { display: inline-flex; align-items: center; gap: 14px; font: 800 30px var(--display); letter-spacing: -.01em; }
+    .kite-logo svg { width: 34px; height: 40px; }
+
+    /* 1 · Intro */
+    .intro { flex-direction: row; gap: 90px; align-items: center; }
+    .portrait { position: relative; width: 520px; flex: none; margin: 0; }
+    .portrait img { width: 520px; height: 680px; object-fit: cover; object-position: 50% 35%; border-radius: 40px 40px 180px 40px; border: 2px solid var(--line); display: block; }
+    .portrait figcaption { position: absolute; left: 22px; bottom: 26px; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 12px 22px; font: 600 22px var(--body); transform: rotate(-3deg); }
+    .intro h1 { font-size: 110px; }
+    .intro .lede { margin-top: 24px; font-size: 32px; max-width: 820px; }
+    .facts { list-style: none; padding: 0; margin: 38px 0 0; display: grid; gap: 14px; }
+    .facts li { display: grid; grid-template-columns: 26px 1fr; gap: 14px; font-size: 27px; line-height: 1.35; }
+    .facts li::before { content: ""; width: 14px; height: 14px; margin-top: .45em; transform: rotate(45deg); background: var(--kite); border-radius: 2px; }
+    .facts b { font-weight: 700; }
+
+    /* 2 · What I keep seeing */
+    .seeing h2 { max-width: 1300px; }
+    .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+    .point { background: var(--card); border: 2px solid var(--line); border-radius: 30px; padding: 30px 30px 34px; }
+    .point b { width: 60px; height: 60px; display: grid; place-items: center; font: 800 30px var(--display); background: var(--kite); border-radius: 50%; margin-bottom: 20px; }
+    .point span { font-size: 31px; line-height: 1.3; display: block; }
+    .punch { margin-top: 48px; font: 700 46px var(--display); letter-spacing: -.02em; }
+
+    /* 3 · Vision */
+    .vision { justify-content: center; background: var(--sky); }
+    .vision h2 { font-size: 86px; line-height: 1.04; max-width: 1350px; }
+    .vision .lede { margin-top: 34px; color: var(--ink); font-size: 34px; max-width: 1180px; }
+    .vision .belief { margin-top: 48px; display: inline-flex; align-self: flex-start; align-items: center; gap: 16px; background: var(--card); border-radius: 999px; padding: 18px 30px; font: 700 30px var(--display); letter-spacing: -.01em; }
+    .vision .belief i { width: 16px; height: 16px; transform: rotate(45deg); background: var(--kite); border: 2px solid var(--ink); border-radius: 2px; }
+
+    /* Meet Kimi */
+    .kimi { flex-direction: row; gap: 70px; align-items: center; }
+    .kimi-left { flex: 1; }
+    .kimi .lede { margin-top: 22px; font-size: 30px; }
+    .abilities { display: grid; gap: 16px; margin-top: 34px; }
+    .ability { display: grid; grid-template-columns: 150px 1fr; gap: 20px; align-items: center; background: var(--card); border: 2px solid var(--line); border-radius: 24px; padding: 18px 24px; }
+    .ability .ic { font: 500 18px var(--mono); letter-spacing: .1em; background: var(--kite); border-radius: 99px; padding: 8px 12px; text-align: center; }
+    .ability p { font-size: 26px; line-height: 1.3; }
+    .saw { width: 540px; flex: none; background: var(--ink); color: var(--ground); border-radius: 34px; padding: 30px; }
+    .saw-k { font: 500 17px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--kite); margin-bottom: 18px; }
+    .saw-top { display: grid; grid-template-columns: 110px 1fr; gap: 18px; align-items: center; }
+    .saw-top img { width: 110px; height: 110px; border-radius: 20px; object-fit: contain; background: #fff; }
+    .saw-top b { display: block; font: 800 32px var(--display); line-height: 1.1; }
+    .saw-top span { display: block; font: 400 18px var(--mono); color: #C9DBEC; margin-top: 6px; }
+    .saw ul { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 10px; }
+    .saw li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; font-size: 22px; line-height: 1.3; }
+    .saw li::before { content: "✓"; color: var(--kite); font-weight: 700; }
+
+    /* 4 · Demo title */
+    .title { justify-content: center; background: radial-gradient(circle at 82% 30%, var(--sky) 0, transparent 38%); }
+    .title .by { margin-top: 56px; display: inline-flex; align-self: flex-start; font: 500 20px var(--mono); letter-spacing: .12em; text-transform: uppercase; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 10px 20px; }
+    .title .kite { position: absolute; right: 150px; top: 150px; width: 300px; }
+
+    /* Guess */
+    .guess { flex-direction: row; gap: 80px; align-items: center; }
+    .guess .photo { width: 620px; height: 620px; border-radius: 40px; background: #fff; border: 2px solid var(--line); flex: none; display: grid; place-items: center; overflow: hidden; }
+    .guess .photo img { width: 90%; height: 90%; object-fit: contain; }
+    .guess h2 { font-size: 78px; margin-bottom: 30px; }
+    .guesses { display: flex; gap: 18px; margin-top: 34px; }
+    .guesses label { display: flex; align-items: center; gap: 6px; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 14px 26px; font: 800 40px var(--display); }
+    .guesses input { width: 120px; background: transparent; border: 0; color: var(--ink); font: inherit; outline: none; }
+    .guesses label:focus-within { border-color: var(--sky-deep); box-shadow: 0 0 0 4px var(--sky-soft); }
+
+    /* Demo */
+    .demo { flex-direction: row; gap: 90px; align-items: center; padding-top: 50px; padding-bottom: 50px; }
+    .phone { width: 410px; height: 800px; border-radius: 56px; background: var(--ink); padding: 14px; box-shadow: 0 40px 90px #0E2A4740; flex: none; }
+    .phone iframe { width: 100%; height: 100%; border: 0; border-radius: 44px; background: var(--ground); }
+    .cues { flex: 1; }
+    .cues ol { list-style: none; padding: 0; margin: 40px 0 0; display: grid; gap: 18px; counter-reset: c; }
+    .cues li { font-size: 30px; color: var(--ink-soft); counter-increment: c; display: grid; grid-template-columns: 60px 1fr; align-items: baseline; }
+    .cues li::before { content: counter(c); font: 500 24px var(--mono); color: var(--sky-deep); }
+    .modebar { display: flex; gap: 12px; margin-top: 44px; }
+    .btn { background: var(--card); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 12px 22px; font: 600 20px var(--body); cursor: pointer; }
+    .btn[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* Ladder */
+    .ladder { display: grid; gap: 22px; margin-top: 44px; }
+    .rung { display: grid; grid-template-columns: 110px 420px 1fr 260px; gap: 30px; align-items: center; background: var(--card); border: 2px solid var(--line); border-radius: 30px; padding: 18px 30px 18px 18px; }
+    .rung img { width: 110px; height: 110px; border-radius: 20px; object-fit: cover; background: var(--sky-soft); }
+    .rung .lbl { font: 500 21px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+    .rung .sub { font: 400 19px var(--mono); color: var(--ink-soft); margin-top: 8px; line-height: 1.35; }
+    .rung .bar { height: 30px; background: var(--sky-soft); border-radius: 30px; overflow: hidden; }
+    .rung .bar i { display: block; height: 100%; border-radius: 30px; width: 0; transition: width 1.1s cubic-bezier(.2,.8,.2,1); }
+    .rung .p { font: 800 76px var(--display); letter-spacing: -.03em; text-align: right; font-variant-numeric: tabular-nums; }
+    .rung .p small { font-size: 32px; color: var(--ink-soft); font-weight: 600; margin-right: 4px; }
+    .rung.approx { background: transparent; border-style: dashed; }
+    .rung.approx .p { color: var(--ink-soft); }
+    .rung.approx .bar i { background-image: repeating-linear-gradient(-45deg, transparent 0 10px, #ffffff99 10px 18px) !important; }
+    .rung.approx .lbl::after { content: " · similar, not identical"; color: var(--t-sg); letter-spacing: .04em; }
+    .guessline { margin-top: 34px; font-size: 28px; color: var(--ink-soft); }
+    .guessline b { color: var(--ink); }
+
+    /* Landed cost */
+    .flow { display: flex; align-items: stretch; margin-top: 60px; }
+    .flow .end { background: var(--card); border: 2px solid var(--line); border-radius: 30px; padding: 26px 34px; min-width: 300px; }
+    .flow .end .lbl { font: 500 20px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .flow .end .p { font: 800 84px var(--display); letter-spacing: -.03em; margin-top: 6px; }
+    .flow .mid { flex: 1; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 12px; padding: 0 30px; position: relative; }
+    .flow .mid::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 3px dashed var(--line); z-index: 0; }
+    .flow .mid span { position: relative; z-index: 1; background: var(--ground); border: 2px solid var(--line); border-radius: 99px; padding: 10px 20px; font-size: 24px; }
+    .bigline { margin-top: 70px; font: 700 54px/1.2 var(--display); letter-spacing: -.02em; max-width: 1300px; }
+
+    /* Pipeline */
+    .pipe { display: grid; grid-template-columns: 1fr 70px 1.25fr 70px 1fr 70px .9fr; align-items: center; margin-top: 64px; }
+    .box { background: var(--card); border: 2px solid var(--line); border-radius: 28px; padding: 26px 26px 28px; min-height: 230px; }
+    .box .n { font: 500 18px var(--mono); color: var(--sky-deep); letter-spacing: .12em; }
+    .box h3 { font: 800 30px var(--display); letter-spacing: -.02em; margin: 10px 0 12px; }
+    .box p { font-size: 21px; color: var(--ink-soft); line-height: 1.4; }
+    .box.brain { background: var(--sky-soft); border-color: var(--sky-deep); }
+    .box .tag { display: inline-block; margin-top: 14px; font: 500 15px var(--mono); letter-spacing: .1em; text-transform: uppercase; background: var(--kite); color: var(--ink); border-radius: 99px; padding: 6px 12px; }
+    .arrow { text-align: center; font-size: 44px; color: var(--sky-deep); }
+    .par { display: grid; gap: 14px; }
+    .par .box { min-height: 0; padding: 18px 22px; }
+    .par .box h3 { font-size: 26px; margin: 4px 0 6px; }
+    .par .box p { font-size: 18px; }
+
+    /* Why these matches */
+    .rejects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 44px; }
+    .rej { display: grid; grid-template-columns: 120px 1fr; gap: 20px; background: var(--card); border: 2px solid var(--line); border-radius: 26px; padding: 16px; align-items: center; }
+    .rej img { width: 120px; height: 120px; border-radius: 16px; object-fit: cover; background: var(--sky-soft); }
+    .rej .v { font: 500 16px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .rej .v.same { color: var(--good); } .rej .v.no { color: var(--t-us); }
+    .rej .r { font-size: 23px; line-height: 1.3; margin-top: 6px; font-weight: 600; }
+    .rej .m { font: 400 16px var(--mono); color: var(--ink-soft); margin-top: 6px; }
+
+    /* Limits + not rocket science */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 56px; }
+    .stat { background: var(--card); border: 2px solid var(--line); border-radius: 30px; padding: 30px; }
+    .stat b { display: block; font: 800 84px var(--display); letter-spacing: -.03em; }
+    .stat span { font-size: 24px; color: var(--ink-soft); line-height: 1.35; }
+    .limits { margin-top: 44px; display: grid; gap: 16px; font-size: 30px; color: var(--ink-soft); }
+    .limits li { margin-left: 30px; }
+    .limits li::marker { color: var(--kite); }
+    .yours { margin-top: 50px; font: 700 50px/1.2 var(--display); letter-spacing: -.02em; max-width: 1300px; }
+
+    /* Close */
+    .close { justify-content: center; background: var(--ink); color: var(--ground); }
+    .close .kicker { color: var(--kite); }
+    .close .sub { margin-top: 30px; font-size: 36px; color: #C9DBEC; max-width: 1150px; line-height: 1.35; }
+    .close .row { display: flex; align-items: center; gap: 30px; margin-top: 56px; }
+    .close .cta { display: inline-flex; font: 700 32px var(--body); background: var(--kite); color: var(--ink); border-radius: 999px; padding: 20px 34px; }
+    .close .contact { display: flex; flex-direction: column; gap: 6px; font: 500 21px var(--mono); color: #C9DBEC; letter-spacing: .03em; }
+    .close .kite-logo { position: absolute; left: 110px; bottom: 60px; color: var(--ground); font-size: 26px; }
+    .close .sub { max-width: 1000px; }
+    .close .row { align-self: flex-start; }
+    .close .qr { position: absolute; right: 110px; bottom: 56px; width: 300px; background: #fff; border-radius: 28px; padding: 22px 22px 16px; text-align: center; color: var(--ink); box-shadow: 0 24px 60px #00000055; }
+    .close .qr img { width: 256px; height: 256px; display: block; margin: 0 auto; image-rendering: pixelated; }
+    .close .qr span { display: block; margin-top: 10px; font: 600 20px var(--body); }
+
+    /* Chrome */
+    .progress { position: absolute; left: 0; bottom: 0; height: 6px; background: var(--kite); transition: width .35s ease; }
+    .count { position: absolute; right: 30px; bottom: 22px; font: 400 18px var(--mono); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+    .brandmark { position: absolute; left: 110px; bottom: 24px; display: flex; align-items: center; gap: 12px; font: 500 17px var(--mono); color: var(--ink-soft); letter-spacing: .12em; }
+    .brandmark i { width: 13px; height: 13px; background: var(--kite); border: 1.5px solid var(--ink); border-radius: 2px; transform: rotate(45deg); }
+    .sample-warn { position: absolute; top: 24px; right: 30px; background: var(--kite); color: var(--ink); font: 500 16px var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 8px 14px; border-radius: 99px; }
+    .help { position: fixed; left: 12px; bottom: 10px; font: 12px var(--mono); color: #7e93aa; }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+
+    <!-- ============ PART 1 · WHO I AM AND WHAT I SEE ============ -->
+
+    <!-- 1 · Intro -->
+    <section class="slide intro">
+      <figure class="portrait">
+        <img src="deck/qiao.jpg" alt="Qiao">
+        <figcaption>Founder, Kite Collective</figcaption>
+      </figure>
+      <div>
+        <p class="kicker">AI coach &amp; educator · Singapore</p>
+        <h1>Hi, I'm <span class="hl">Qiao.</span></h1>
+        <p class="lede">I started by using AI in my own small business. When I began sharing what worked online, I realized how much people need it in their daily work.</p>
+        <p class="lede" style="margin-top:18px;color:var(--ink)">Now I help business owners and teams put AI to work.</p>
+        <ul class="facts">
+          <li><span><b>200+ business owners</b> have tested what I teach</span></li>
+          <li><span>Bilingual AI tutorials on RedNote, Bilibili, YouTube and Instagram</span></li>
+          <li><span>Hosted AI panels and events with ByteDance and Google Cloud</span></li>        </ul>
+      </div>
+    </section>
+
+    <!-- 2 · What I keep seeing -->
+    <section class="slide seeing">
+      <p class="kicker">What I keep seeing</p>
+      <h2>My friends run businesses. Most of them have no idea <span class="hl">what things cost in China.</span></h2>
+      <div class="points">
+        <div class="point"><b>1</b><span>The prices are public, on 1688, China's wholesale marketplace.</span></div>
+        <div class="point"><b>2</b><span>But it's all in Chinese, spread across several platforms.</span></div>
+        <div class="point"><b>3</b><span>Checking one product can take 20 minutes, so most people never do.</span></div>
+      </div>
+      <p class="punch">A huge opportunity. Just <span class="hl">not convenient.</span></p>
+    </section>
+
+    <!-- 3 · What I believe -->
+    <section class="slide vision">
+      <p class="kicker">What I believe</p>
+      <h2>You don't need an app for millions of people. You need a tool <span class="hl">for you.</span></h2>
+      <p class="lede">Models like Kimi are now powerful enough that anyone can build small tools, custom-made for their own business. It's not rocket science. That's the real power of AI.</p>
+      <span class="belief"><i></i>Every team, and every person, should have their own AI tools.</span>
+    </section>
+
+    <!-- ============ PART 2 · THE DEMO ============ -->
+
+    <!-- 4 · Demo title -->
+    <section class="slide title">
+      <svg class="kite" viewBox="-60 -80 120 190" aria-hidden="true">
+        <path d="M0 -62 40 -14 0 0Z" fill="#FFC23D"/><path d="M0 -62 -40 -14 0 0Z" fill="#FFD97A"/>
+        <path d="M-40 -14 0 0 0 62Z" fill="#FFFFFF"/><path d="M40 -14 0 0 0 62Z" fill="#F59BB0"/>
+        <path d="M0 -62 40 -14 0 62 -40 -14Z" fill="none" stroke="#0E2A47" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M0 62c-8 10 8 16 0 26s8 14 0 20" stroke="#0E2A47" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p class="kicker">Here's one we built in an afternoon</p>
+      <h1>Factory to <span class="hl">Shelf.</span></h1>
+      <p class="lede" style="margin-top:30px;max-width:920px">Photograph a product. See what the factory charges, and what it sells for, with the real listing behind every number.</p>
+      <span class="by">Built with Kimi K3</span>
+    </section>
+
+    <!-- 5 · Guess -->
+    <section class="slide guess">
+      <div class="photo"><img id="heroPhoto" alt="Tonight's product"></div>
+      <div>
+        <p class="kicker">Before we scan it</p>
+        <h2>What does the factory charge for <span id="heroNameShort">this</span>?</h2>
+        <p class="lede">Shout a number. Singapore dollars, one unit.</p>
+        <div class="guesses">
+          <label>S$<input id="g1" inputmode="decimal" placeholder="?"></label>
+          <label>S$<input id="g2" inputmode="decimal" placeholder="?"></label>
+          <label>S$<input id="g3" inputmode="decimal" placeholder="?"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · Live demo -->
+    <section class="slide demo" data-enter="demo">
+      <div class="phone"><img id="demoPhoto" alt="The photo that was scanned" style="width:100%;height:100%;object-fit:cover;border-radius:44px;background:var(--ground)"></div>
+      <div class="cues">
+        <p class="kicker">Let's find out</p>
+        <h2>One <span class="hl">photo.</span></h2>
+        <ol>
+          <li>Kimi reads the photo</li>
+          <li>1688 searches its factories by image</li>
+          <li>Google Lens finds the same item on Amazon Singapore and US</li>
+          <li>Kimi decides which matches are the same product</li>
+        </ol>
+        <p class="muted" style="margin-top:34px;font-size:20px">The tool itself runs on my own laptop. Every number on the next slides comes from a real scan of this photo.</p>
+      </div>
+    </section>
+
+    <!-- 7 · The ladder -->
+    <section class="slide" data-enter="ladder">
+      <p class="kicker">The price ladder</p>
+      <h2 id="ladderTitle">From factory to shelf</h2>
+      <div class="ladder" id="ladder"></div>
+      <p class="guessline" id="guessline"></p>
+    </section>
+
+    <!-- 8 · Honest math -->
+    <section class="slide">
+      <p class="kicker">Read it properly</p>
+      <h2>This is <span class="hl">not a markup.</span></h2>
+      <div class="flow">
+        <div class="end"><div class="lbl" style="color:var(--t-factory)">Factory</div><div class="p" id="flowFactory">—</div></div>
+        <div class="mid"><span>× minimum order</span><span>freight</span><span>import duty</span><span>9% GST</span><span>platform fees</span><span>QC · returns</span><span>cash tied up</span></div>
+        <div class="end"><div class="lbl" style="color:var(--t-sg)">Singapore shelf</div><div class="p" id="flowShelf">—</div></div>
+      </div>
+      <p class="bigline">The factory number is a reference for negotiating, not a price you can buy at. After landed cost it's still <em>the whole business.</em></p>
+    </section>
+
+    <!-- Meet Kimi: what the model is, and what it did with one real photo (read from the saved scan) -->
+    <section class="slide kimi" data-enter="kimi">
+      <div class="kimi-left">
+        <p class="kicker">The brain behind it</p>
+        <h2>Meet <span class="hl">Kimi K3.</span></h2>
+        <p class="lede">The AI model from Moonshot AI. In this tool, Kimi does the two jobs that need judgement.</p>
+        <div class="abilities">
+          <div class="ability"><span class="ic">SEES</span><p>Reads a photo directly. No typing, no description.</p></div>
+          <div class="ability"><span class="ic">THINKS</span><p>Reasons before it answers, and we choose how hard it thinks.</p></div>
+          <div class="ability"><span class="ic">ZH · EN</span><p>Compares Chinese factory listings and English Amazon listings side by side.</p></div>
+        </div>
+      </div>
+      <div class="saw">
+        <p class="saw-k">What Kimi saw in one photo</p>
+        <div class="saw-top"><img id="kimiPhoto" alt=""><div><b id="kimiName">—</b><span id="kimiMeta"></span></div></div>
+        <ul id="kimiFeatures"></ul>
+      </div>
+    </section>
+
+    <!-- 9 · How it's built -->
+    <section class="slide">
+      <p class="kicker">How it's built</p>
+      <h2>A few API calls. <span class="hl">One moment of reasoning.</span></h2>
+      <div class="pipe">
+        <div class="box brain"><div class="n">01 · IDENTIFY</div><h3>Kimi K3 reads the photo</h3><p>What it is, its material, and the details that separate it from look-alikes.</p></div>
+        <div class="arrow">→</div>
+        <div class="par">
+          <div class="box"><div class="n">02 · FACTORY</div><h3>1688 image search</h3><p>Wholesale price + minimum order</p></div>
+          <div class="box"><div class="n">02 · RETAIL</div><h3>Google Lens → Amazon</h3><p>The same item on Amazon SG and US</p></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="box brain"><div class="n">03 · JUDGE</div><h3>Kimi K3 decides what's the same</h3><p>Every listing and its photo, compared with yours: same, similar or different, with a reason.</p><span class="tag">The only hard step</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><div class="n">04 · LADDER</div><h3>Convert &amp; rank</h3><p>Median of identical listings, in SGD, each linked.</p></div>
+      </div>
+    </section>
+
+    <!-- 10 · Where the intelligence sits -->
+    <section class="slide" data-enter="why">
+      <p class="kicker">Where the intelligence sits</p>
+      <h2>It <span class="hl">shows its work.</span></h2>
+      <div class="rejects" id="rejects"></div>
+    </section>
+
+    <!-- 11 · Honest limits -->
+    <section class="slide" data-enter="stats">
+      <p class="kicker">The honest version</p>
+      <h2>What it costs, and <span class="hl">where it breaks.</span></h2>
+      <div class="stats">
+        <!-- Measured on a live mug scan, 11 Sep 2026: 76.6s, Apify $0.069 + Kimi ~$0.04 -->
+        <div class="stat"><b>~75s</b><span>per scan, while it searches three marketplaces</span></div>
+        <div class="stat"><b>~US$0.11</b><span>per scan in API calls</span></div>
+        <div class="stat"><b id="statListings">—</b><span>listings checked for this scan</span></div>
+      </div>
+      <ul class="limits">
+        <li>Branded goods have no honest factory listing.</li>
+        <li>Very generic items (a plain mug) find look-alikes, not the same product.</li>
+        <li>Amazon Singapore is mostly imported stock, so it's an import price.</li>
+      </ul>
+    </section>
+
+    <!-- ============ PART 3 · YOU CAN DO THIS ============ -->
+
+    <!-- 12 · Not rocket science -->
+    <section class="slide">
+      <p class="kicker">What this really shows</p>
+      <h2>It's <span class="hl">not rocket science.</span></h2>
+      <div class="stats">
+        <div class="stat"><b>1</b><span>afternoon to build</span></div>
+        <div class="stat"><b>0</b><span>engineers on the team</span></div>
+        <div class="stat"><b>1</b><span>real need it solves: ours</span></div>
+      </div>
+      <p class="yours">Think of the tool <em>your</em> business keeps wishing it had. You can build that too, and I want to show you how.</p>
+    </section>
+
+    <!-- 13 · Webinar -->
+    <section class="slide close">
+      <p class="kicker">Next week · Free webinar</p>
+      <h1 style="font-size:112px;line-height:1">Stop Doing It Manually.</h1>
+      <h2 style="font-size:84px;line-height:1.05;margin-top:16px;color:var(--kite)">Practical AI for Your Sales Workflow</h2>
+      <p class="sub">Five small things AI can do in your daily work, and how to set them up yourself.</p>
+      <div class="row">
+        <span class="cta" id="ctaText">Scan to join the group →</span>
+        <span class="contact">
+          <span>hello@kitecollective.co</span>
+          <span>kitecollective.co</span>        </span>
+      </div>
+      <div class="qr">
+        <img src="deck/whatsapp-qr.png" alt="WhatsApp group QR code">
+        <span>Join the WhatsApp group</span>
+      </div>
+      <div class="kite-logo">
+        <svg viewBox="0 0 26 30" aria-hidden="true"><path d="M13 1 25 12 13 23 1 12Z" fill="#FFC23D" stroke="#F2F8FD" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 1v22M1 12h24" stroke="#F2F8FD" stroke-width="1.2"/><path d="M13 23c-2 2 2 3 0 6" stroke="#F2F8FD" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        Kite Collective
+      </div>
+    </section>
+
+    <div class="brandmark" id="brandmark"><i></i>KITE COLLECTIVE · FACTORY TO SHELF</div>
+    <div class="count" id="count"></div>
+    <div class="progress" id="progress"></div>
+    <div class="sample-warn" id="sampleWarn" hidden>Sample data</div>
+  </div>
+  <div class="help">← → to move · F for full screen</div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+    const params = new URLSearchParams(location.search);
+    const HERO = Number(params.get('hero')) || 2;
+    const BAR = { factory: 'var(--bar-factory)', cn: 'var(--bar-cn)', sg: 'var(--bar-sg)', us: 'var(--bar-us)' };
+    const TEXT = { factory: 'var(--t-factory)', cn: 'var(--t-cn)', sg: 'var(--t-sg)', us: 'var(--t-us)' };
+    const CUR = { CNY: '¥', USD: 'US$', SGD: 'S$' };
+    const money = (n) => (n >= 100 ? Math.round(n).toLocaleString('en-SG') : n >= 20 ? Math.round(n) : n.toFixed(2));
+    const orig = (p, c) => `${CUR[c] || c + ' '}${p >= 100 ? Math.round(p) : +(+p).toFixed(2)}`;
+    const cap = (s) => String(s || '').replace(/^./, (c) => c.toUpperCase());
+
+    // ---- stage scaling + navigation ----
+    const stage = $('#stage');
+    function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); stage.style.transform = `translate(-50%, -50%) scale(${s})`; }
+    // Re-fit on any size change (window resize, fullscreen, projector switch), not just the resize event.
+    addEventListener('resize', fit);
+    addEventListener('load', fit);
+    document.addEventListener('fullscreenchange', fit);
+    new ResizeObserver(fit).observe(document.documentElement);
+    fit();
+
+    const slides = [...document.querySelectorAll('.slide')];
+    let idx = Math.min(slides.length - 1, Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+    const onEnter = {};
+    function go(n) {
+      idx = Math.min(slides.length - 1, Math.max(0, n));
+      slides.forEach((s, k) => s.classList.toggle('on', k === idx));
+      history.replaceState(null, '', location.pathname + location.search + '#' + (idx + 1));
+      $('#count').textContent = `${idx + 1} / ${slides.length}`;
+      $('#progress').style.width = `${((idx + 1) / slides.length) * 100}%`;
+      $('#brandmark').hidden = slides[idx].classList.contains('close');
+      const hook = slides[idx].dataset.enter;
+      if (hook && onEnter[hook]) onEnter[hook]();
+    }
+    addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' && !['Enter', 'PageDown', 'PageUp', 'Escape'].includes(e.key)) return;
+      if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); if (e.target.tagName === 'INPUT') e.target.blur(); go(idx + 1); }
+      else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(idx - 1); }
+      else if (e.key === 'Home') go(0);
+      else if (e.key === 'End') go(slides.length - 1);
+      else if (e.key === 'f' || e.key === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+    });
+
+    // ---- guesses (typed live from the room, remembered for the ladder slide) ----
+    const guessIds = ['g1', 'g2', 'g3'];
+    let saved = []; try { saved = JSON.parse(store.get('deck-guesses') || '[]'); } catch {}
+    guessIds.forEach((id, i) => { const el = $('#' + id); el.value = saved[i] || ''; el.addEventListener('input', () => store.set('deck-guesses', JSON.stringify(guessIds.map((g) => $('#' + g).value.trim())))); });
+    const guesses = () => guessIds.map((g) => parseFloat($('#' + g).value)).filter((n) => n > 0);
+
+    // Published version: the app runs locally, so this slide shows the scanned photo.
+    onEnter.demo = () => { $('#demoPhoto').src = `deck/hero-${HERO}.jpg`; };
+
+    // ---- data slides, filled from the saved scan ----
+    let hero = null;
+    $('#heroPhoto').src = `deck/hero-${HERO}.jpg`;
+
+    function renderLadder() {
+      if (!hero) return;
+      const rungs = hero.ladder.filter((r) => !r.empty);
+      const max = Math.max(1, ...rungs.map((r) => r.priceSgd));
+      $('#ladder').innerHTML = hero.ladder.map((r) => {
+        if (r.empty) return `<div class="rung approx"><div></div><div><div class="lbl" style="color:${TEXT[r.key]}">${esc(r.label)}</div><div class="sub">No reliable match</div></div><div class="bar"></div><div class="p">—</div></div>`;
+        const l = r.listing;
+        const sub = [orig(l.price, l.currency), l.moq ? `MOQ ${l.moq}` : 'single unit', `${r.count} listing${r.count > 1 ? 's' : ''}`].join(' · ');
+        return `<div class="rung${r.approx ? ' approx' : ''}">
+          ${l.thumb ? `<img src="${esc(l.thumb)}" alt="">` : '<div></div>'}
+          <div><div class="lbl" style="color:${TEXT[r.key]}">${esc(r.label)}</div><div class="sub">${esc(sub)}</div></div>
+          <div class="bar"><i data-w="${Math.max(3, (r.priceSgd / max) * 100)}" style="background:${BAR[r.key]}"></i></div>
+          <div class="p">${r.approx ? '<small>≈</small>' : ''}<small>S$</small>${money(r.priceSgd)}</div></div>`;
+      }).join('');
+      const g = guesses();
+      const f = hero.ladder.find((r) => r.key === 'factory' && !r.empty);
+      $('#guessline').innerHTML = g.length && f
+        ? `Your guesses: <b>${g.map((n) => 'S$' + n).join(' · ')}</b> &nbsp;·&nbsp; Factory: <b>S$${money(f.priceSgd)}</b>`
+        : 'Every number is a real listing. Tap any of them in the app to check.';
+    }
+    onEnter.ladder = () => {
+      renderLadder();
+      // A timer rather than requestAnimationFrame, which never fires while the window is hidden or minimised.
+      setTimeout(() => document.querySelectorAll('#ladder .bar i').forEach((i) => { i.style.width = i.dataset.w + '%'; }), 60);
+    };
+
+    onEnter.why = () => {
+      if (!hero) return;
+      // Kept = judged SAME and used; set aside = actually rejected (hand-picked rungs are used, so never shown as rejected).
+      const same = hero.candidates.filter((c) => c.verdict === 'SAME').slice(0, 2);
+      const no = hero.rejected.filter((c) => c.thumb).slice(0, 6 - same.length);
+      const mk = { factory: '1688', sg: 'Amazon SG', us: 'Amazon US', cn: 'Taobao' };
+      $('#rejects').innerHTML = [...same, ...no].map((c) => `<div class="rej">
+        ${c.thumb ? `<img src="${esc(c.thumb)}" alt="">` : '<div></div>'}
+        <div><div class="v ${c.verdict === 'SAME' ? 'same' : 'no'}">${c.verdict === 'SAME' ? '✓ Kept' : '✕ Set aside'}</div>
+        <div class="r">“${esc(c.reason)}”</div><div class="m">${esc(mk[c.market] || c.market)} · ${esc(orig(c.price, c.currency))}</div></div></div>`).join('');
+    };
+
+    // Meet Kimi: Kimi's own description of the hero photo, straight from the saved scan.
+    onEnter.kimi = () => {
+      $('#kimiPhoto').src = `deck/hero-${HERO}.jpg`;
+      if (!hero) return;
+      const p = hero.product;
+      $('#kimiName').textContent = cap(p.name_en);
+      $('#kimiMeta').textContent = [p.material, p.category].filter(Boolean).join(' · ');
+      $('#kimiFeatures').innerHTML = (p.features || []).slice(0, 5).map((f) => `<li>${esc(cap(f))}</li>`).join('');
+    };
+
+    onEnter.stats = () => {
+      if (!hero) return;
+      $('#statListings').textContent = hero.candidates.length + hero.rejected.length;
+    };
+
+    fetch(`hero-${HERO}.json`).then((r) => (r.ok ? r.json() : null)).then((r) => {
+      hero = r;
+      if (!r) return;
+      $('#heroNameShort').textContent = 'this ' + (r.product.name_en.split(' ').slice(-1)[0] || 'product');
+      $('#ladderTitle').textContent = cap(r.product.name_en);
+      $('#sampleWarn').hidden = !r.flags?.sample;
+      const f = r.ladder.find((x) => x.key === 'factory' && !x.empty);
+      const s = r.ladder.find((x) => x.key === 'sg' && !x.empty);
+      if (f) $('#flowFactory').innerHTML = `${f.approx ? '≈' : ''}S$${money(f.priceSgd)}`;
+      if (s) $('#flowShelf').innerHTML = `${s.approx ? '≈' : ''}S$${money(s.priceSgd)}`;
+      const hook = slides[idx].dataset.enter;
+      if (hook && onEnter[hook]) onEnter[hook]();
+    });
+
+    const cta = params.get('cta');
+    if (cta) $('#ctaText').textContent = cta;
+
+    go(idx);
+  </script>
+</body>
+</html>
